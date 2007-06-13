@@ -1,0 +1,5 @@
+libpciaccess (0.8.0+git20070613-1) UNRELEASED; urgency=low
+
+  * Initial release.
+
+ -- Julien Cristau <jcristau@debian.org>  Wed, 13 Jun 2007 16:29:54 +0200

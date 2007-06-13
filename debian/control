@@ -1,0 +1,26 @@
+Source: libpciaccess
+Section: devel
+Priority: optional
+Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
+Uploaders: Julien Cristau <jcristau@debian.org>
+Build-Depends: debhelper
+Standards-Version: 3.7.2
+XS-Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess
+XS-Vcs-Browser: http://git.debian.org/?p=pkg-xorg/lib/libpciaccess.git
+
+Package: libpciaccess0
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Generic PCI access library for X
+ Provides functionality for X to access the PCI bus and devices
+ in a platform-independant way.
+
+Section: libdevel
+Architecture: any
+Depends: libpciaccess0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Generic PCI access library for X - development files
+ Provides functionality for X to access the PCI bus and devices
+ in a platform-independant way.
+ .
+ This package contains the development files for libpciaccess.
