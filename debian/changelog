@@ -1,5 +1,5 @@
-libpciaccess (0.8.0+git20070613-1) UNRELEASED; urgency=low
+libpciaccess (0.8.0+git20070613-1) experimental; urgency=low
 
-  * Initial release.
+  * Initial upload (closes: #428776).
 
- -- Julien Cristau <jcristau@debian.org>  Wed, 13 Jun 2007 16:29:54 +0200
+ -- Julien Cristau <jcristau@debian.org>  Thu, 14 Jun 2007 23:09:50 +0200
