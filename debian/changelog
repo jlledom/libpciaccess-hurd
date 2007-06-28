@@ -1,3 +1,9 @@
+libpciaccess (0.8.0+git20070628-1) UNRELEASED; urgency=low
+
+  * New upstream snapshot.
+
+ -- Julien Cristau <jcristau@debian.org>  Fri, 29 Jun 2007 00:56:26 +0100
+
 libpciaccess (0.8.0+git20070613-1) experimental; urgency=low
 
   * Initial upload (closes: #428776).
