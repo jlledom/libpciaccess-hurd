@@ -1,8 +1,10 @@
 libpciaccess (0.8.0+git20070628-1) UNRELEASED; urgency=low
 
   * New upstream snapshot.
+  * Make configure executable in debian/rules clean (closes: #430932); thanks,
+    Frank Lichtenheld!
 
- -- Julien Cristau <jcristau@debian.org>  Fri, 29 Jun 2007 00:56:26 +0100
+ -- Julien Cristau <jcristau@debian.org>  Fri, 29 Jun 2007 00:59:38 +0100
 
 libpciaccess (0.8.0+git20070613-1) experimental; urgency=low
 

@@ -43,6 +43,8 @@ clean:
 	rm -f conftest* */conftest*
 	rm -rf autom4te.cache */autom4te.cache
 	rm -rf obj-*
+	# needed while we use git snapshots
+	chmod +x configure
 	
 	dh_clean
 
