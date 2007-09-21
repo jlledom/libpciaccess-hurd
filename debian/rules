@@ -28,6 +28,7 @@ build-stamp:
 	cd obj-$(DEB_BUILD_GNU_TYPE) && \
 	../configure --prefix=/usr --mandir=\$${prefix}/share/man \
 	--infodir=\$${prefix}/share/info $(confflags) \
+	--with-pciids-path=\$${prefix}/share/misc \
 	CFLAGS="$(CFLAGS)" 
 	cd obj-$(DEB_BUILD_GNU_TYPE) && $(MAKE)
 	
