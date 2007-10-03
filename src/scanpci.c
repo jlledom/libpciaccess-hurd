@@ -24,6 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <err.h>
 
 #include "pciaccess.h"
 
@@ -127,10 +128,10 @@ print_pci_device( struct pci_device * dev, int verbose )
 	pci_device_probe( dev );
 	for ( i = 0 ; i < 6 ; i++ ) {
 	    if ( dev->regions[i].base_addr != 0 ) {
-		printf( "  BASE%u     0x%08x  addr 0x%08x  %s",
+		printf( "  BASE%u     0x%08x SIZE %d  %s",
 			i,
-			0,
 			(intptr_t) dev->regions[i].base_addr,
+			(size_t) dev->regions[i].size,
 			(dev->regions[i].is_IO) ? "I/O" : "MEM" );
 
 		if ( ! dev->regions[i].is_IO ) {
@@ -176,8 +177,11 @@ int main( int argc, char ** argv )
 {
     struct pci_device_iterator * iter;
     struct pci_device * dev;
+    int ret;
 
-    pci_system_init();
+    ret = pci_system_init();
+    if (ret != 0)
+	err(1, "Couldn't initialize PCI system");
 
     iter = pci_slot_match_iterator_create( NULL );
 
