@@ -2,7 +2,7 @@ Source: libpciaccess
 Section: devel
 Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
-Uploaders: Julien Cristau <jcristau@debian.org>
+Uploaders: Julien Cristau <jcristau@debian.org>, David Nusinow <dnusinow@debian.org>
 Build-Depends: debhelper
 Standards-Version: 3.7.2
 XS-Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess

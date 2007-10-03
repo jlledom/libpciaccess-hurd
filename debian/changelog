@@ -4,8 +4,9 @@ libpciaccess (0.8.0+git20071002-1) experimental; urgency=low
     --with-pciids-path configure option so the library can fill in certain
     values correctly
   * New upstream git pull
+  * Add myself to uploaders
 
- -- David Nusinow <dnusinow@debian.org>  Tue, 02 Oct 2007 21:36:00 -0400
+ -- David Nusinow <dnusinow@debian.org>  Tue, 02 Oct 2007 21:40:38 -0400
 
 libpciaccess (0.8.0+git20070628-1) experimental; urgency=low
 
