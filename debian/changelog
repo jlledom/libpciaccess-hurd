@@ -1,10 +1,11 @@
-libpciaccess (0.8.0+git20070628-2) UNRELEASED; urgency=low
+libpciaccess (0.8.0+git20071002-1) experimental; urgency=low
 
   * Debian stores its pci.ids list in /usr/share/misc. Use that for the
     --with-pciids-path configure option so the library can fill in certain
     values correctly
+  * New upstream git pull
 
- -- David Nusinow <dnusinow@debian.org>  Thu, 20 Sep 2007 21:10:07 -0400
+ -- David Nusinow <dnusinow@debian.org>  Tue, 02 Oct 2007 21:36:00 -0400
 
 libpciaccess (0.8.0+git20070628-1) experimental; urgency=low
 
