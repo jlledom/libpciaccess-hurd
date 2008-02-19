@@ -38,9 +38,16 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/pciio.h>
 #include <sys/mman.h>
 #include <sys/memrange.h>
+
+#if __FreeBSD_version >= 700053
+#define DOMAIN_SUPPORT 1
+#else
+#define DOMAIN_SUPPORT 0
+#endif
 
 #include "pciaccess.h"
 #include "pciaccess_private.h"
@@ -108,8 +115,11 @@ pci_device_freebsd_map_range(struct pci_device *dev,
     mro.mo_desc = &mrd;
     mro.mo_arg[0] = MEMRANGE_SET_UPDATE;
 
-    if (ioctl(fd, MEMRANGE_SET, &mro)) {
-	fprintf(stderr, "failed to set mtrr: %s\n", strerror(errno));
+    /* No need to set an MTRR if it's the default mode. */
+    if (mrd.mr_flags != MDF_UNCACHEABLE) {
+	if (ioctl(fd, MEMRANGE_SET, &mro)) {
+	    fprintf(stderr, "failed to set mtrr: %s\n", strerror(errno));
+	}
     }
 
     close(fd);
@@ -117,7 +127,7 @@ pci_device_freebsd_map_range(struct pci_device *dev,
     return err;
 }
 
-static void
+static int
 pci_device_freebsd_unmap_range( struct pci_device *dev,
 				struct pci_device_mapping *map )
 {
@@ -125,23 +135,29 @@ pci_device_freebsd_unmap_range( struct pci_device *dev,
     struct mem_range_op mro;
     int fd;
 
-    fd = open("/dev/mem", O_RDWR);
-    if (fd != -1) {
-	mrd.mr_base = map->base;
-	mrd.mr_len = map->size;
-	strncpy(mrd.mr_owner, "pciaccess", sizeof(mrd.mr_owner));
-	mrd.mr_flags = MDF_UNCACHEABLE;
-	mro.mo_desc = &mrd;
-	mro.mo_arg[0] = MEMRANGE_SET_REMOVE;
+    if ((map->flags & PCI_DEV_MAP_FLAG_CACHABLE) ||
+	(map->flags & PCI_DEV_MAP_FLAG_WRITE_COMBINE))
+    {
+	fd = open("/dev/mem", O_RDWR);
+	if (fd != -1) {
+	    mrd.mr_base = map->base;
+	    mrd.mr_len = map->size;
+	    strncpy(mrd.mr_owner, "pciaccess", sizeof(mrd.mr_owner));
+	    mrd.mr_flags = MDF_UNCACHEABLE;
+	    mro.mo_desc = &mrd;
+	    mro.mo_arg[0] = MEMRANGE_SET_REMOVE;
 
-	if (ioctl(fd, MEMRANGE_SET, &mro)) {
-	    fprintf(stderr, "failed to unset mtrr: %s\n", strerror(errno));
+	    if (ioctl(fd, MEMRANGE_SET, &mro)) {
+		fprintf(stderr, "failed to unset mtrr: %s\n", strerror(errno));
+	    }
+
+	    close(fd);
+	} else {
+	    fprintf(stderr, "Failed to open /dev/mem\n");
 	}
-
-	close(fd);
     }
 
-    pci_device_generic_unmap_range(dev, map);
+    return pci_device_generic_unmap_range(dev, map);
 }
 
 static int
@@ -151,6 +167,9 @@ pci_device_freebsd_read( struct pci_device * dev, void * data,
 {
     struct pci_io io;
 
+#if DOMAIN_SUPPORT
+    io.pi_sel.pc_domain = dev->domain;
+#endif
     io.pi_sel.pc_bus = dev->bus;
     io.pi_sel.pc_dev = dev->dev;
     io.pi_sel.pc_func = dev->func;
@@ -188,6 +207,9 @@ pci_device_freebsd_write( struct pci_device * dev, const void * data,
 {
     struct pci_io io;
 
+#if DOMAIN_SUPPORT
+    io.pi_sel.pc_domain = dev->domain;
+#endif
     io.pi_sel.pc_bus = dev->bus;
     io.pi_sel.pc_dev = dev->dev;
     io.pi_sel.pc_func = dev->func;
@@ -375,9 +397,10 @@ pci_device_freebsd_probe( struct pci_device * dev )
     bar = 0x10;
     for (i = 0; i < pci_device_freebsd_get_num_regions( dev ); i++) {
 	pci_device_freebsd_get_region_info( dev, i, bar );
-	if (dev->regions[i].is_64)
+	if (dev->regions[i].is_64) {
 	    bar += 0x08;
-	else
+	    i++;
+	} else
 	    bar += 0x04;
     }
 
@@ -464,7 +487,11 @@ pci_system_freebsd_create( void )
     for ( i = 0; i < pciconfio.num_matches; i++ ) {
 	struct pci_conf *p = &pciconf[ i ];
 
-	pci_sys->devices[ i ].base.domain = 0; /* XXX */
+#if DOMAIN_SUPPORT
+	pci_sys->devices[ i ].base.domain = p->pc_sel.pc_domain;
+#else
+	pci_sys->devices[ i ].base.domain = 0;
+#endif
 	pci_sys->devices[ i ].base.bus = p->pc_sel.pc_bus;
 	pci_sys->devices[ i ].base.dev = p->pc_sel.pc_dev;
 	pci_sys->devices[ i ].base.func = p->pc_sel.pc_func;
