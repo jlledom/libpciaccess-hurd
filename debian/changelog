@@ -1,4 +1,4 @@
-libpciaccess (0.9.1+git20080219-1) UNRELEASED; urgency=low
+libpciaccess (0.9.1+git20080219-1) unstable; urgency=low
 
   * Add a symbols file for libpciaccess.so.0.
   * Bump shlibs to >= 0.8.0+git20071002 (this version added the
@@ -7,7 +7,7 @@ libpciaccess (0.9.1+git20080219-1) UNRELEASED; urgency=low
   * New upstream snapshot.
   * Fix build on non-linux glibc architectures.
 
- -- Julien Cristau <jcristau@debian.org>  Tue, 19 Feb 2008 11:02:29 +0100
+ -- Julien Cristau <jcristau@debian.org>  Tue, 19 Feb 2008 16:13:05 +0100
 
 libpciaccess (0.8.0+git20071002-1) experimental; urgency=low
 
