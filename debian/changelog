@@ -5,6 +5,7 @@ libpciaccess (0.9.1+git20080219-1) UNRELEASED; urgency=low
     pci_device_{un,}map_range functions)
   * Bump Standards-Version to 3.7.3.
   * New upstream snapshot.
+  * Fix build on non-linux glibc architectures.
 
  -- Julien Cristau <jcristau@debian.org>  Tue, 19 Feb 2008 11:02:29 +0100
 
