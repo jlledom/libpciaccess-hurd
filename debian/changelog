@@ -1,9 +1,9 @@
-libpciaccess (0.10-1) UNRELEASED; urgency=low
+libpciaccess (0.10-1) unstable; urgency=low
 
   * New upstream release.
   * Install the upstream changelog.
 
- -- Julien Cristau <jcristau@debian.org>  Fri, 07 Mar 2008 14:33:19 +0100
+ -- Julien Cristau <jcristau@debian.org>  Fri, 07 Mar 2008 14:43:39 +0100
 
 libpciaccess (0.9.1+git20080219-1) unstable; urgency=low
 
