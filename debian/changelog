@@ -1,3 +1,9 @@
+libpciaccess (0.10-2) UNRELEASED; urgency=low
+
+  * Add watch file.
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 11 May 2008 15:30:28 +0200
+
 libpciaccess (0.10-1) unstable; urgency=low
 
   * New upstream release.
