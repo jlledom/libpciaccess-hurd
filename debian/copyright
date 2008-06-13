@@ -1,9 +1,9 @@
-This package was debianized by Julien Cristau <jcristau@debian.org> on
+This package was downloaded from
+http://xorg.freedesktop.org/releases/individual/lib/
+
+It was debianized by Julien Cristau <jcristau@debian.org> on
 Wed, 13 Jun 2007, with package descriptions taken from a package by
 Matthew Garrett <mjg59@srcf.ucam.org>.
-
-It was downloaded from
-<git://anongit.freedesktop.org/git/xorg/lib/libpciaccess>
 
 The Debian packaging is (C) 2007, Matthew Garrett <mjg59@srcf.ucam.org> and
 Julien Cristau <jcristau@debian.org>, and is licensed under the GPL, see
