@@ -1,3 +1,111 @@
+commit ed0555e4225aec26aaaa40f4f3c15fd914390817
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Tue Jun 10 15:24:56 2008 -0400
+
+    libpciaccess 0.10.3
+
+commit 07577a875bc9996437cfe30e5a87ca6b1a0f7e4a
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Tue Jun 10 15:23:06 2008 -0400
+
+    libpciaccess 0.10.2
+
+commit e3adc06b8b8214478aa1d3e85fd5f83b79d039b4
+Author: Eric Anholt <eric@anholt.net>
+Date:   Thu Jun 5 11:39:06 2008 -0700
+
+    Catch and recover from yet another linux kernel bug in mprotect.
+
+commit 4586bb6766983d040bff38b43dc458c47e0ca21f
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Wed May 21 13:44:38 2008 -0400
+
+    Linux: Fail gracefully on machines without PCI.
+
+commit 26400575a2a2d10b1014eaf0bfca6cfbf5d9b93b
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Wed May 21 16:10:37 2008 +1000
+
+    pciaccess: bump to 0.10.1
+
+commit 4bc9292ff9338e759eb9a73f12edfa5ca87353e0
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Wed May 21 16:10:24 2008 +1000
+
+    linux: add pci_device_enable entrypoint and sysfs support for it
+
+commit ded8326f2adadc773b34889474a0d4fc20ef387a
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri May 9 15:15:42 2008 -0700
+
+    Fix lint warnings in solx_devfs.c
+
+commit 74c976a7bcee3102993cf788850d0b803cf15afd
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri May 9 15:05:46 2008 -0700
+
+    Add pci_system_solx_devfs_create prototype to pciaccess_private.h
+
+commit 2ac461b2eca788fa0559312d45efd3caf6eea9bb
+Author: Alan Coopersmith <alan.coopersmith@sun.com>
+Date:   Fri May 9 14:49:32 2008 -0700
+
+    Initialize err to 0 in pci_device_solx_devfs_map_range
+    
+    Prevents returning errors when mapping actually succeeds
+
+commit b30d458202bc0304c705eb081b12ead860584bea
+Author: Keith Packard <keithp@keithp.com>
+Date:   Wed Apr 16 12:10:52 2008 -0700
+
+    Kludge around linux bug and turn off write-through and cache-disable bits
+    
+    When mmaping the PCI device, the kernel turns on the write-through and
+    cache-disable bits in the allocated PTEs. This disables write-combining mode
+    and dramatically reduces write bandwidth to the frame buffer. While that
+    should be fixed in the kernel, we'll kludge around it here by using mprotect
+    to rewrite the PTEs and get those bits turned off.
+
+commit a3b63c43b960e3b37e1b303214e63c5155192a5d
+Author: Hasso Tepper <hasso@estpak.ee>
+Date:   Mon Apr 7 15:28:44 2008 +0300
+
+    Add DragonFly BSD support
+    
+    DragonFly behaves exactly like FreeBSD, so no problem here.
+
+commit ec53d6ef2bdf0e7a087ffd45fe112290f2181656
+Author: Danny van Dyk <danny.dyk@uni-dortmund.de>
+Date:   Fri Mar 28 17:01:29 2008 -0700
+
+    Fix function prototypes for C++
+
+commit a5c862029846ddd5cecf44819f2a967e2a1672a9
+Author: Stuart Bennett <sb476@cam.ac.uk>
+Date:   Fri Mar 14 11:58:33 2008 -0400
+
+    Bug #13988: Fix reads from "0"-sized ROMs.
+
+commit d898072e28ac35f5b3569f48f2e90a9ef8eee2ca
+Author: Mark Kettenis <mark.kettenis@xs4all.nl>
+Date:   Wed Mar 12 21:29:58 2008 +0100
+
+    OpenBSD support for libpciaccess.
+    
+    xserver and libpciaccess both need to open /dev/xf86, which can only
+    be opened once.  I implemented pci_system_init_dev_mem() like Ian
+    suggested.  This requires some minor changes to the BSD-specific
+    os-support code.  Since pci_system_init_dev_mem() is a no-op on
+    FreeBSD this should be no problem.
+
+commit 4224ff23794500e1455f28fd5689bd0549b72367
+Author: Julien Cristau <jcristau@debian.org>
+Date:   Fri Mar 7 14:41:47 2008 +0100
+
+    solaris: add pci_tools.h to OS_SUPPORT
+    
+    pci_tools.h was missing from the tarball, but is needed by solx_devfs.c
+
 commit ac119e0b1d5fdbb6bd447b6cef1ddca59840fe40
 Author: Adam Jackson <ajax@redhat.com>
 Date:   Thu Mar 6 15:31:51 2008 -0500

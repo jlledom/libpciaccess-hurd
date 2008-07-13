@@ -83,9 +83,10 @@ am__libpciaccess_la_SOURCES_DIST = common_bridge.c common_iterator.c \
 	common_init.c common_interface.c common_capability.c \
 	common_device_name.c common_map.c pciaccess_private.h \
 	freebsd_pci.c linux_sysfs.c linux_devmem.c linux_devmem.h \
-	solx_devfs.c
-@FREEBSD_FALSE@@LINUX_FALSE@@SOLARIS_TRUE@am__objects_1 =  \
-@FREEBSD_FALSE@@LINUX_FALSE@@SOLARIS_TRUE@	solx_devfs.lo
+	openbsd_pci.c solx_devfs.c pci_tools.h
+@FREEBSD_FALSE@@LINUX_FALSE@@OPENBSD_FALSE@@SOLARIS_TRUE@am__objects_1 = solx_devfs.lo
+@FREEBSD_FALSE@@LINUX_FALSE@@OPENBSD_TRUE@am__objects_1 =  \
+@FREEBSD_FALSE@@LINUX_FALSE@@OPENBSD_TRUE@	openbsd_pci.lo
 @FREEBSD_FALSE@@LINUX_TRUE@am__objects_1 = linux_sysfs.lo \
 @FREEBSD_FALSE@@LINUX_TRUE@	linux_devmem.lo
 @FREEBSD_TRUE@am__objects_1 = freebsd_pci.lo
@@ -236,7 +237,8 @@ AM_CFLAGS = @PCIACCESS_CFLAGS@
 lib_LTLIBRARIES = libpciaccess.la
 @FREEBSD_TRUE@OS_SUPPORT = freebsd_pci.c
 @LINUX_TRUE@OS_SUPPORT = linux_sysfs.c linux_devmem.c linux_devmem.h
-@SOLARIS_TRUE@OS_SUPPORT = solx_devfs.c
+@OPENBSD_TRUE@OS_SUPPORT = openbsd_pci.c
+@SOLARIS_TRUE@OS_SUPPORT = solx_devfs.c pci_tools.h
 libpciaccess_la_SOURCES = common_bridge.c \
 	common_iterator.c \
 	common_init.c \
@@ -249,7 +251,7 @@ libpciaccess_la_SOURCES = common_bridge.c \
 
 INCLUDES = -I$(top_srcdir)/include
 libpciaccess_la_LIBADD = @PCIACCESS_LIBS@
-libpciaccess_la_LDFLAGS = -version-number 0:10:0 -no-undefined
+libpciaccess_la_LDFLAGS = -version-number 0:10:2 -no-undefined
 libpciaccessincludedir = $(includedir)
 libpciaccessinclude_HEADERS = \
     $(top_srcdir)/include/pciaccess.h
@@ -346,6 +348,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/freebsd_pci.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linux_devmem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/linux_sysfs.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/openbsd_pci.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scanpci.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/solx_devfs.Plo@am__quote@
 
