@@ -59,6 +59,7 @@ struct pci_system_methods {
 		pciaddr_t size, pciaddr_t * bytes_written );
 
     int (*fill_capabilities)( struct pci_device * dev );
+    void (*enable)( struct pci_device *dev );
 };
 
 struct pci_device_mapping {
@@ -135,3 +136,6 @@ extern struct pci_system * pci_sys;
 
 extern int pci_system_linux_sysfs_create( void );
 extern int pci_system_freebsd_create( void );
+extern int pci_system_openbsd_create( void );
+extern void pci_system_openbsd_init_dev_mem( int );
+extern int pci_system_solx_devfs_create( void );

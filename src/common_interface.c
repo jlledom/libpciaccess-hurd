@@ -61,10 +61,16 @@
 
 #include <sys/endian.h>
 
-#define LETOH_16(x)	le16toh(x)
 #define HTOLE_16(x)	htole16(x)
-#define LETOH_32(x)	le32toh(x)
 #define HTOLE_32(x)	htole32(x)
+
+#if defined(__FreeBSD__) || defined(__DragonFly__)
+#define LETOH_16(x)	le16toh(x)
+#define LETOH_32(x)	le32toh(x)
+#else
+#define LETOH_16(x)	letoh16(x)
+#define LETOH_32(x)	letoh32(x)
+#endif
 
 #endif /* others */
 
@@ -597,4 +603,15 @@ pci_device_cfg_write_bits( struct pci_device * dev, uint32_t mask,
     }
 
     return err;
+}
+
+void
+pci_device_enable(struct pci_device *dev)
+{
+    if (dev == NULL) {
+	return;
+    }
+
+    if (pci_sys->methods->enable)
+	pci_sys->methods->enable(dev);
 }

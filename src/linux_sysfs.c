@@ -55,6 +55,8 @@
 #include "pciaccess_private.h"
 #include "linux_devmem.h"
 
+static void pci_device_linux_sysfs_enable(struct pci_device *dev);
+
 static int pci_device_linux_sysfs_read_rom( struct pci_device * dev,
     void * buffer );
 
@@ -84,7 +86,8 @@ static const struct pci_system_methods linux_sysfs_methods = {
     .read = pci_device_linux_sysfs_read,
     .write = pci_device_linux_sysfs_write,
 
-    .fill_capabilities = pci_fill_capabilities_generic
+    .fill_capabilities = pci_fill_capabilities_generic,
+    .enable = pci_device_linux_sysfs_enable,
 };
 
 #define SYS_BUS_PCI "/sys/bus/pci/devices"
@@ -111,6 +114,9 @@ pci_system_linux_sysfs_create( void )
 	pci_sys = calloc( 1, sizeof( struct pci_system ) );
 	if ( pci_sys != NULL ) {
 	    pci_sys->methods = & linux_sysfs_methods;
+#ifdef HAVE_MTRR
+	    pci_sys->mtrr_fd = open("/proc/mtrr", O_WRONLY);
+#endif
 	    err = populate_entries(pci_sys);
 	}
 	else {
@@ -120,10 +126,6 @@ pci_system_linux_sysfs_create( void )
     else {
 	err = errno;
     }
-
-#ifdef HAVE_MTRR
-    pci_sys->mtrr_fd = open("/proc/mtrr", O_WRONLY);
-#endif
 
     return err;
 }
@@ -307,6 +309,7 @@ pci_device_linux_sysfs_read_rom( struct pci_device * dev, void * buffer )
     int fd;
     struct stat  st;
     int err = 0;
+    size_t rom_size;
     size_t total_bytes;
 
 
@@ -331,6 +334,9 @@ pci_device_linux_sysfs_read_rom( struct pci_device * dev, void * buffer )
 	return errno;
     }
 
+    rom_size = st.st_size;
+    if ( rom_size == 0 )
+	rom_size = 0x10000;
 
     /* This is a quirky thing on Linux.  Even though the ROM and the file
      * for the ROM in sysfs are read-only, the string "1" must be written to
@@ -340,9 +346,9 @@ pci_device_linux_sysfs_read_rom( struct pci_device * dev, void * buffer )
     write( fd, "1", 1 );
     lseek( fd, 0, SEEK_SET );
 
-    for ( total_bytes = 0 ; total_bytes < st.st_size ; /* empty */ ) {
+    for ( total_bytes = 0 ; total_bytes < rom_size ; /* empty */ ) {
 	const int bytes = read( fd, (char *) buffer + total_bytes,
-				st.st_size - total_bytes );
+				rom_size - total_bytes );
 	if ( bytes == -1 ) {
 	    err = errno;
 	    break;
@@ -531,11 +537,10 @@ pci_device_linux_sysfs_map_range(struct pci_device *dev,
 
     map->memory = mmap(NULL, map->size, prot, MAP_SHARED, fd, offset);
     if (map->memory == MAP_FAILED) {
-        err = errno;
         map->memory = NULL;
+	close(fd);
+	return errno;
     }
-
-    close(fd);
 
 #ifdef HAVE_MTRR
     if ((map->flags & PCI_DEV_MAP_FLAG_CACHABLE) != 0) {
@@ -554,10 +559,29 @@ pci_device_linux_sysfs_map_range(struct pci_device *dev,
 		    strerror(errno), errno);
 /*            err = errno;*/
 	}
+	/* KLUDGE ALERT -- rewrite the PTEs to turn off the CD and WT bits */
+	mprotect (map->memory, map->size, PROT_NONE);
+	err = mprotect (map->memory, map->size, PROT_READ|PROT_WRITE);
+
+	if (err != 0) {
+	    fprintf(stderr, "mprotect(PROT_READ | PROT_WRITE) failed: %s\n",
+		    strerror(errno));
+	    fprintf(stderr, "remapping without mprotect performace kludge.\n");
+
+	    munmap(map->memory, map->size);
+	    map->memory = mmap(NULL, map->size, prot, MAP_SHARED, fd, offset);
+	    if (map->memory == MAP_FAILED) {
+		map->memory = NULL;
+		close(fd);
+		return errno;
+	    }
+	}
     }
 #endif
 
-    return err;
+    close(fd);
+
+    return 0;
 }
 
 /**
@@ -614,4 +638,24 @@ pci_device_linux_sysfs_unmap_range(struct pci_device *dev,
 #endif
 
     return err;
+}
+
+static void pci_device_linux_sysfs_enable(struct pci_device *dev)
+{
+    char name[256];
+    int fd;
+
+    snprintf( name, 255, "%s/%04x:%02x:%02x.%1u/enable",
+	      SYS_BUS_PCI,
+	      dev->domain,
+	      dev->bus,
+	      dev->dev,
+	      dev->func );
+    
+    fd = open( name, O_RDWR );
+    if (fd == -1)
+       return;
+
+    write( fd, "1", 1 );
+    close(fd);
 }

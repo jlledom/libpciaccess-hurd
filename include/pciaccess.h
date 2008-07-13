@@ -46,6 +46,10 @@ struct pci_device_iterator;
 struct pci_id_match;
 struct pci_slot_match;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int pci_device_read_rom(struct pci_device *dev, void *buffer);
 
 int  __deprecated pci_device_map_region(struct pci_device *dev,
@@ -81,6 +85,8 @@ int pci_device_get_bridge_buses(struct pci_device *dev, int *primary_bus,
 
 int pci_system_init(void);
 
+void pci_system_init_dev_mem(int fd);
+
 void pci_system_cleanup(void);
 
 struct pci_device_iterator *pci_slot_match_iterator_create(
@@ -104,6 +110,8 @@ const char *pci_device_get_subdevice_name(const struct pci_device *dev);
 const char *pci_device_get_vendor_name(const struct pci_device *dev);
 const char *pci_device_get_subvendor_name(const struct pci_device *dev);
 
+void pci_device_enable(struct pci_device *dev);
+
 int pci_device_cfg_read    (struct pci_device *dev, void *data,
     pciaddr_t offset, pciaddr_t size, pciaddr_t *bytes_read);
 int pci_device_cfg_read_u8 (struct pci_device *dev, uint8_t  *data,
@@ -123,6 +131,10 @@ int pci_device_cfg_write_u32(struct pci_device *dev, uint32_t data,
     pciaddr_t offset);
 int pci_device_cfg_write_bits(struct pci_device *dev, uint32_t mask,
     uint32_t data, pciaddr_t offset);
+
+#ifdef __cplusplus
+}
+#endif
 
 /**
  * \name Mapping flags passed to \c pci_device_map_range

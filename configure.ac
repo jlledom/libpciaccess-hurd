@@ -40,7 +40,7 @@ dnl refers to ${prefix}.  Thus we have to use `eval' twice.
 
 AC_PREREQ([2.57])
 
-AC_INIT(libpciaccess, 0.10, [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg&component=libpciaccess], libpciaccess)
+AC_INIT(libpciaccess, 0.10.3, [https://bugs.freedesktop.org/enter_bug.cgi?product=xorg&component=libpciaccess], libpciaccess)
 AM_INIT_AUTOMAKE([dist-bzip2])
 AM_MAINTAINER_MODE
 
@@ -71,11 +71,14 @@ if test "x$GCC" = "xyes"; then
 fi
 
 case $host_os in
-	*freebsd*)
+	*freebsd* | *dragonfly*)
 		freebsd=yes
 		;;
 	*linux*)
 		linux=yes
+		;;
+	*openbsd*)
+		openbsd=yes
 		;;
 	*solaris*)
 		solaris=yes
@@ -85,6 +88,7 @@ esac
 
 AM_CONDITIONAL(LINUX, [test "x$linux" = xyes])
 AM_CONDITIONAL(FREEBSD, [test "x$freebsd" = xyes])
+AM_CONDITIONAL(OPENBSD, [test "x$openbsd" = xyes])
 AM_CONDITIONAL(SOLARIS, [test "x$solaris" = xyes])
 
 AC_CHECK_FILE([/usr/include/asm/mtrr.h],
