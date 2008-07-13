@@ -3,6 +3,7 @@ libpciaccess (0.10.3-1) UNRELEASED; urgency=low
   [ Julien Cristau ]
   * Add watch file.
   * New upstream release.
+  * Bump shlibs and update symbols file.
 
   [ Brice Goglin ]
   * Update upstream URL in debian/copyright.

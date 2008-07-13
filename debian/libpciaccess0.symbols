@@ -3,7 +3,9 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_map_region@Base 0
  pci_device_cfg_read_u32@Base 0
  pci_system_init@Base 0
+ pci_system_init_dev_mem@Base 0.10.2
  pci_device_cfg_write_u16@Base 0
+ pci_device_enable@Base 0.10.2
  pci_get_strings@Base 0
  pci_device_map_memory_range@Base 0
  pci_device_get_subvendor_name@Base 0
