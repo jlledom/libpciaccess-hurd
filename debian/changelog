@@ -4,6 +4,7 @@ libpciaccess (0.10.3-1) UNRELEASED; urgency=low
   * Add watch file.
   * New upstream release.
   * Bump shlibs and update symbols file.
+  * Suggest pciutils, which provides the pci.ids list.
 
   [ Brice Goglin ]
   * Update upstream URL in debian/copyright.
