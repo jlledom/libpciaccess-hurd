@@ -1,4 +1,4 @@
-libpciaccess (0.10.3-1) UNRELEASED; urgency=low
+libpciaccess (0.10.3-1) unstable; urgency=low
 
   [ Julien Cristau ]
   * Add watch file.
@@ -10,7 +10,7 @@ libpciaccess (0.10.3-1) UNRELEASED; urgency=low
   * Update upstream URL in debian/copyright.
   * Drop the XS- prefix from Vcs-Git and Vcs-Browser fields in debian/control.
 
- -- Brice Goglin <bgoglin@debian.org>  Fri, 13 Jun 2008 11:14:01 +0200
+ -- Julien Cristau <jcristau@debian.org>  Sun, 13 Jul 2008 14:58:51 +0200
 
 libpciaccess (0.10-1) unstable; urgency=low
 
