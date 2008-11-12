@@ -1,3 +1,10 @@
+libpciaccess (0.10.5-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * Run autoreconf at build time, cleanup generated files in clean.
+
+ -- Julien Cristau <jcristau@debian.org>  Wed, 12 Nov 2008 20:04:21 +0100
+
 libpciaccess (0.10.3-1) unstable; urgency=low
 
   [ Julien Cristau ]
