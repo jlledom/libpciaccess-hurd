@@ -26,7 +26,7 @@
  * \file linux_sysfs.c
  * Access PCI subsystem using Linux's sysfs interface.  This interface is
  * available starting somewhere in the late 2.5.x kernel phase, and is the
- * prefered method on all 2.6.x kernels.
+ * preferred method on all 2.6.x kernels.
  *
  * \author Ian Romanick <idr@us.ibm.com>
  */
@@ -73,7 +73,7 @@ static int pci_device_linux_sysfs_read( struct pci_device * dev, void * data,
 
 static int pci_device_linux_sysfs_write( struct pci_device * dev,
     const void * data, pciaddr_t offset, pciaddr_t size,
-    pciaddr_t * bytes_wrtten );
+    pciaddr_t * bytes_written );
 
 static const struct pci_system_methods linux_sysfs_methods = {
     .destroy = NULL,
@@ -484,6 +484,40 @@ pci_device_linux_sysfs_write( struct pci_device * dev, const void * data,
     return err;
 }
 
+static int
+pci_device_linux_sysfs_map_range_wc(struct pci_device *dev,
+				    struct pci_device_mapping *map)
+{
+    char name[256];
+    int fd;
+    const int prot = ((map->flags & PCI_DEV_MAP_FLAG_WRITABLE) != 0) 
+        ? (PROT_READ | PROT_WRITE) : PROT_READ;
+    const int open_flags = ((map->flags & PCI_DEV_MAP_FLAG_WRITABLE) != 0) 
+        ? O_RDWR : O_RDONLY;
+    const off_t offset = map->base - dev->regions[map->region].base_addr;
+
+    snprintf(name, 255, "%s/%04x:%02x:%02x.%1u/resource%u_wc",
+	     SYS_BUS_PCI,
+	     dev->domain,
+	     dev->bus,
+	     dev->dev,
+	     dev->func,
+	     map->region);
+    fd = open(name, open_flags);
+    if (fd == -1)
+	    return errno;
+
+    map->memory = mmap(NULL, map->size, prot, MAP_SHARED, fd, offset);
+    if (map->memory == MAP_FAILED) {
+        map->memory = NULL;
+	close(fd);
+	return errno;
+    }
+
+    close(fd);
+
+    return 0;
+}
 
 /**
  * Map a memory region for a device using the Linux sysfs interface.
@@ -520,6 +554,11 @@ pci_device_linux_sysfs_map_range(struct pci_device *dev,
 	.type = MTRR_TYPE_UNCACHABLE
     };
 #endif
+
+    /* For WC mappings, try sysfs resourceN_wc file first */
+    if ((map->flags & PCI_DEV_MAP_FLAG_WRITE_COMBINE) &&
+	!pci_device_linux_sysfs_map_range_wc(dev, map))
+	    return 0;
 
     snprintf(name, 255, "%s/%04x:%02x:%02x.%1u/resource%u",
              SYS_BUS_PCI,
@@ -566,7 +605,7 @@ pci_device_linux_sysfs_map_range(struct pci_device *dev,
 	if (err != 0) {
 	    fprintf(stderr, "mprotect(PROT_READ | PROT_WRITE) failed: %s\n",
 		    strerror(errno));
-	    fprintf(stderr, "remapping without mprotect performace kludge.\n");
+	    fprintf(stderr, "remapping without mprotect performance kludge.\n");
 
 	    munmap(map->memory, map->size);
 	    map->memory = mmap(NULL, map->size, prot, MAP_SHARED, fd, offset);

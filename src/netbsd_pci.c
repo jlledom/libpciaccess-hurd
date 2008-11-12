@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2008 Juan Romero Pardines
  * Copyright (c) 2008 Mark Kettenis
  *
  * Permission to use, copy, modify, and distribute this software for any
@@ -16,10 +17,13 @@
 
 #include <sys/param.h>
 #include <sys/ioctl.h>
-#include <sys/memrange.h>
 #include <sys/mman.h>
-#include <sys/pciio.h>
+#include <sys/types.h>
 
+#include <machine/sysarch.h>
+#include <machine/mtrr.h>
+
+#include <dev/pci/pciio.h>
 #include <dev/pci/pcireg.h>
 #include <dev/pci/pcidevs.h>
 
@@ -30,48 +34,46 @@
 #include <string.h>
 #include <unistd.h>
 
+
 #include "pciaccess.h"
 #include "pciaccess_private.h"
 
-static int pcifd = -1;
-static int aperturefd = -1;
+static int pcifd;
 
 static int
 pci_read(int bus, int dev, int func, uint32_t reg, uint32_t *val)
 {
-	struct pci_io io;
+	struct pciio_bdf_cfgreg io;
 	int err;
 
 	bzero(&io, sizeof(io));
-	io.pi_sel.pc_bus = bus;
-	io.pi_sel.pc_dev = dev;
-	io.pi_sel.pc_func = func;
-	io.pi_reg = reg;
-	io.pi_width = 4;
+	io.bus = bus;
+	io.device = dev;
+	io.function = func;
+	io.cfgreg.reg = reg;
 
-	err = ioctl(pcifd, PCIOCREAD, &io);
+	err = ioctl(pcifd, PCI_IOC_BDF_CFGREAD, &io);
 	if (err)
 		return (err);
 
-	*val = io.pi_data;
+	*val = io.cfgreg.val;
 
-	return (0);
+	return 0;
 }
 
 static int
 pci_write(int bus, int dev, int func, uint32_t reg, uint32_t val)
 {
-	struct pci_io io;
+	struct pciio_bdf_cfgreg io;
 
 	bzero(&io, sizeof(io));
-	io.pi_sel.pc_bus = bus;
-	io.pi_sel.pc_dev = dev;
-	io.pi_sel.pc_func = func;
-	io.pi_reg = reg;
-	io.pi_width = 4;
-	io.pi_data = val;
+	io.bus = bus;
+	io.device = dev;
+	io.function = func;
+	io.cfgreg.reg = reg;
+	io.cfgreg.val = val;
 
-	return ioctl(pcifd, PCIOCWRITE, &io);
+	return ioctl(pcifd, PCI_IOC_BDF_CFGWRITE, &io);
 }
 
 static int
@@ -86,90 +88,100 @@ pci_nfuncs(int bus, int dev)
 }
 
 static int
-pci_device_openbsd_map_range(struct pci_device *dev,
+pci_device_netbsd_map_range(struct pci_device *dev,
     struct pci_device_mapping *map)
 {
-	struct mem_range_desc mr;
-	struct mem_range_op mo;
-	int prot = PROT_READ;
+	struct mtrr mtrr;
+	int fd, error, nmtrr, prot = PROT_READ;
+
+	if ((fd = open("/dev/mem", O_RDWR)) == -1)
+		return errno;
 
 	if (map->flags & PCI_DEV_MAP_FLAG_WRITABLE)
 		prot |= PROT_WRITE;
 
-	map->memory = mmap(NULL, map->size, prot, MAP_SHARED, aperturefd,
-	    map->base);
+	map->memory = mmap(NULL, map->size, prot, MAP_SHARED,
+	    fd, map->base);
 	if (map->memory == MAP_FAILED)
-		return  errno;
+		return errno;
 
 	/* No need to set an MTRR if it's the default mode. */
 	if ((map->flags & PCI_DEV_MAP_FLAG_CACHABLE) ||
 	    (map->flags & PCI_DEV_MAP_FLAG_WRITE_COMBINE)) {
-		mr.mr_base = map->base;
-		mr.mr_len = map->size;
-		mr.mr_flags = 0;
+		mtrr.base = map->base;
+		mtrr.len = map->size;
+		mtrr.flags = MTRR_VALID;
+
 		if (map->flags & PCI_DEV_MAP_FLAG_CACHABLE)
-			mr.mr_flags |= MDF_WRITEBACK;
+			mtrr.type = MTRR_TYPE_WB;
 		if (map->flags & PCI_DEV_MAP_FLAG_WRITE_COMBINE)
-			mr.mr_flags |= MDF_WRITECOMBINE;
-		strlcpy(mr.mr_owner, "pciaccess", sizeof(mr.mr_owner));
-
-		mo.mo_desc = &mr;
-		mo.mo_arg[0] = MEMRANGE_SET_UPDATE;
-
-		if (ioctl(aperturefd, MEMRANGE_SET, &mo))
+			mtrr.type = MTRR_TYPE_WC;
+#ifdef __i386__
+		error = i386_set_mtrr(&mtrr, &nmtrr);
+#endif
+#ifdef __amd64__
+		error = x86_64_set_mtrr(&mtrr, &nmtrr);
+#endif
+		if (error) {
+			close(fd);
 			return errno;
+		}
 	}
+
+	close(fd);
 
 	return 0;
 }
 
 static int
-pci_device_openbsd_unmap_range(struct pci_device *dev,
+pci_device_netbsd_unmap_range(struct pci_device *dev,
     struct pci_device_mapping *map)
 {
-	struct mem_range_desc mr;
-	struct mem_range_op mo;
+	struct mtrr mtrr;
+	int nmtrr, error;
 
 	if ((map->flags & PCI_DEV_MAP_FLAG_CACHABLE) ||
 	    (map->flags & PCI_DEV_MAP_FLAG_WRITE_COMBINE)) {
-		mr.mr_base = map->base;
-		mr.mr_len = map->size;
-		mr.mr_flags = MDF_UNCACHEABLE;
-		strlcpy(mr.mr_owner, "pciaccess", sizeof(mr.mr_owner));
-
-		mo.mo_desc = &mr;
-		mo.mo_arg[0] = MEMRANGE_SET_REMOVE;
-
-		(void)ioctl(aperturefd, MEMRANGE_SET, &mo);
+		mtrr.base = map->base;
+		mtrr.len = map->size;
+		mtrr.type = MTRR_TYPE_UC;
+		mtrr.flags = 0; /* clear/set MTRR */
+#ifdef __i386__
+		error = i386_set_mtrr(&mtrr, &nmtrr);
+#endif
+#ifdef __amd64__
+		error = x86_64_set_mtrr(&mtrr, &nmtrr);
+#endif
+		if (error)
+			return errno;
 	}
 
 	return pci_device_generic_unmap_range(dev, map);
 }
 
 static int
-pci_device_openbsd_read(struct pci_device *dev, void *data,
+pci_device_netbsd_read(struct pci_device *dev, void *data,
     pciaddr_t offset, pciaddr_t size, pciaddr_t *bytes_read)
 {
-	struct pci_io io;
+	struct pciio_bdf_cfgreg io;
 
-	io.pi_sel.pc_bus = dev->bus;
-	io.pi_sel.pc_dev = dev->dev;
-	io.pi_sel.pc_func = dev->func;
+	io.bus = dev->bus;
+	io.device = dev->dev;
+	io.function = dev->func;
 
 	*bytes_read = 0;
 	while (size > 0) {
 		int toread = MIN(size, 4 - (offset & 0x3));
 
-		io.pi_reg = (offset & ~0x3);
-		io.pi_width = 4;
+		io.cfgreg.reg = (offset & ~0x3);
 
-		if (ioctl(pcifd, PCIOCREAD, &io) == -1)
+		if (ioctl(pcifd, PCI_IOC_BDF_CFGREAD, &io) == -1)
 			return errno;
 
-		io.pi_data = htole32(io.pi_data);
-		io.pi_data >>= ((offset & 0x3) * 8);
+		io.cfgreg.val = htole32(io.cfgreg.val);
+		io.cfgreg.val >>= ((offset & 0x3) * 8);
 
-		memcpy(data, &io.pi_data, toread);
+		memcpy(data, &io.cfgreg.val, toread);
 
 		offset += toread;
 		data = (char *)data + toread;
@@ -181,25 +193,24 @@ pci_device_openbsd_read(struct pci_device *dev, void *data,
 }
 
 static int
-pci_device_openbsd_write(struct pci_device *dev, const void *data,
+pci_device_netbsd_write(struct pci_device *dev, const void *data,
     pciaddr_t offset, pciaddr_t size, pciaddr_t *bytes_written)
 {
-	struct pci_io io;
+	struct pciio_bdf_cfgreg io;
 
 	if ((offset % 4) == 0 || (size % 4) == 0)
 		return EINVAL;
 
-	io.pi_sel.pc_bus = dev->bus;
-	io.pi_sel.pc_dev = dev->dev;
-	io.pi_sel.pc_func = dev->func;
+	io.bus = dev->bus;
+	io.device = dev->dev;
+	io.function = dev->func;
 
 	*bytes_written = 0;
 	while (size > 0) {
-		io.pi_reg = offset;
-		io.pi_width = 4;
-		memcpy(&io.pi_data, data, 4);
+		io.cfgreg.reg = offset;
+		memcpy(&io.cfgreg.val, data, 4);
 
-		if (ioctl(pcifd, PCIOCWRITE, &io) == -1) 
+		if (ioctl(pcifd, PCI_IOC_BDF_CFGWRITE, &io) == -1) 
 			return errno;
 
 		offset += 4;
@@ -212,18 +223,15 @@ pci_device_openbsd_write(struct pci_device *dev, const void *data,
 }
 
 static void
-pci_system_openbsd_destroy(void)
+pci_system_netbsd_destroy(void)
 {
-	close(aperturefd);
 	close(pcifd);
-	aperturefd = -1;
-	pcifd = -1;
 	free(pci_sys);
 	pci_sys = NULL;
 }
 
 static int
-pci_device_openbsd_probe(struct pci_device *device)
+pci_device_netbsd_probe(struct pci_device *device)
 {
 	struct pci_device_private *priv = (struct pci_device_private *)device;
 	struct pci_mem_region *region;
@@ -301,40 +309,36 @@ pci_device_openbsd_probe(struct pci_device *device)
 	return 0;
 }
 
-static const struct pci_system_methods openbsd_pci_methods = {
-	pci_system_openbsd_destroy,
+static const struct pci_system_methods netbsd_pci_methods = {
+	pci_system_netbsd_destroy,
 	NULL,
 	NULL,
-	pci_device_openbsd_probe,
-	pci_device_openbsd_map_range,
-	pci_device_openbsd_unmap_range,
-	pci_device_openbsd_read,
-	pci_device_openbsd_write,
+	pci_device_netbsd_probe,
+	pci_device_netbsd_map_range,
+	pci_device_netbsd_unmap_range,
+	pci_device_netbsd_read,
+	pci_device_netbsd_write,
 	pci_fill_capabilities_generic
 };
 
 int
-pci_system_openbsd_create(void)
+pci_system_netbsd_create(void)
 {
 	struct pci_device_private *device;
 	int bus, dev, func, ndevs, nfuncs;
 	uint32_t reg;
 
-	if (pcifd != -1) 
-		return 0;
-
-	pcifd = open("/dev/pci", O_RDWR);
+	pcifd = open("/dev/pci0", O_RDWR);
 	if (pcifd == -1)
 		return ENXIO;
 
 	pci_sys = calloc(1, sizeof(struct pci_system));
 	if (pci_sys == NULL) {
-		close(aperturefd);
 		close(pcifd);
 		return ENOMEM;
 	}
 
-	pci_sys->methods = &openbsd_pci_methods;
+	pci_sys->methods = &netbsd_pci_methods;
 
 	ndevs = 0;
 	for (bus = 0; bus < 256; bus++) {
@@ -389,7 +393,7 @@ pci_system_openbsd_create(void)
 				    PCI_SUBCLASS(reg) << 8;
 				device->base.revision = PCI_REVISION(reg);
 
-				if (pci_read(bus, dev, func, PCI_SUBVEND_0,
+				if (pci_read(bus, dev, func, PCI_SUBSYS_ID_REG,
 				    &reg) != 0)
 					continue;
 
@@ -402,10 +406,4 @@ pci_system_openbsd_create(void)
 	}
 
 	return 0;
-}
-
-void
-pci_system_openbsd_init_dev_mem(int fd)
-{
-	aperturefd = fd;
 }
