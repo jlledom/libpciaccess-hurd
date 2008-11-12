@@ -6,7 +6,8 @@ Uploaders: Julien Cristau <jcristau@debian.org>, David Nusinow <dnusinow@debian.
 Build-Depends:
  debhelper,
  libtool,
- automake
+ automake,
+ zlib1g-dev
 Standards-Version: 3.7.3
 Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/lib/libpciaccess.git

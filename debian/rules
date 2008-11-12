@@ -33,6 +33,7 @@ obj-$(DEB_BUILD_GNU_TYPE)/config.status: configure
 	  --mandir=\$${prefix}/share/man \
 	  --infodir=\$${prefix}/share/info \
 	  --with-pciids-path=\$${prefix}/share/misc \
+	  --with-zlib \
 	  $(confflags) \
 	  CFLAGS="$(CFLAGS)" 
 
