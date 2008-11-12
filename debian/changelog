@@ -1,6 +1,7 @@
 libpciaccess (0.10.5-1) UNRELEASED; urgency=low
 
-  * New upstream release.
+  * New upstream release
+    + Fixes PCI domain support on kfreebsd (closes: #501333)
   * Run autoreconf at build time, cleanup generated files in clean.
   * Allow reading compressed pci.ids file (closes: #478696).
 
