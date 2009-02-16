@@ -1,3 +1,9 @@
+libpciaccess (0.10.5-3) unstable; urgency=low
+
+  * Upload to unstable, for real this time.
+
+ -- Julien Cristau <jcristau@debian.org>  Mon, 16 Feb 2009 15:52:10 +0100
+
 libpciaccess (0.10.5-2) experimental; urgency=low
 
   * Upload to unstable.
