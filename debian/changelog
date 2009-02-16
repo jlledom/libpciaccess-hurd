@@ -1,3 +1,9 @@
+libpciaccess (0.10.5-2) experimental; urgency=low
+
+  * Upload to unstable.
+
+ -- Julien Cristau <jcristau@debian.org>  Mon, 16 Feb 2009 01:12:29 +0100
+
 libpciaccess (0.10.5-1) experimental; urgency=low
 
   * New upstream release
