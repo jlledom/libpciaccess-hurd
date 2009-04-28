@@ -3,6 +3,7 @@ libpciaccess (0.10.6-1) unstable; urgency=low
   * New upstream release
     + Update debian/copyright with new information from COPYING
     + Add versioned xutils-dev to build-dep, as the macros are now required
+  * Update standards version to 3.8.1.0. No changes necessary.
 
  -- David Nusinow <dnusinow@debian.org>  Mon, 27 Apr 2009 21:16:01 -0400
 
