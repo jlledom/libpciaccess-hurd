@@ -2,8 +2,9 @@ libpciaccess (0.10.6-1) unstable; urgency=low
 
   * New upstream release
     + Update debian/copyright with new information from COPYING
+    + Add versioned xutils-dev to build-dep, as the macros are now required
 
- -- David Nusinow <dnusinow@debian.org>  Mon, 27 Apr 2009 21:01:55 -0400
+ -- David Nusinow <dnusinow@debian.org>  Mon, 27 Apr 2009 21:16:01 -0400
 
 libpciaccess (0.10.5-3) unstable; urgency=low
 
