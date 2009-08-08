@@ -1,5 +1,7 @@
 #!/usr/bin/make -f
 
+include /usr/share/quilt/quilt.make
+
 PACKAGE = libpciaccess0
 
 CFLAGS = -Wall -g
@@ -22,7 +24,7 @@ else
 	confflags += --build=$(DEB_BUILD_GNU_TYPE) --host=$(DEB_HOST_GNU_TYPE)
 endif
 
-configure:
+configure: $(QUILT_STAMPFN)
 	autoreconf -vfi
 
 obj-$(DEB_BUILD_GNU_TYPE)/config.status: configure
@@ -44,7 +46,7 @@ build-stamp: obj-$(DEB_BUILD_GNU_TYPE)/config.status
 	
 	touch build-stamp
 
-clean: 
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
