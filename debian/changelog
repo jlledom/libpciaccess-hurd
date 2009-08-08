@@ -1,4 +1,4 @@
-libpciaccess (0.10.6-2) UNRELEASED; urgency=low
+libpciaccess (0.10.6-2) unstable; urgency=low
 
   * Apply patch from Samuel Thibault to tinker with I/O ports on systems
     without a PCI interface, such as GNU/Hurd (closes: #524111).
@@ -8,7 +8,7 @@ libpciaccess (0.10.6-2) UNRELEASED; urgency=low
   * Bump Standards-Version to 3.8.2.
   * Version debhelper build-dep to silence lintian.
 
- -- Julien Cristau <jcristau@debian.org>  Sat, 08 Aug 2009 18:23:59 +0200
+ -- Julien Cristau <jcristau@debian.org>  Sat, 08 Aug 2009 18:49:40 +0200
 
 libpciaccess (0.10.6-1) unstable; urgency=low
 
