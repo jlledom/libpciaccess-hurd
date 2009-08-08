@@ -5,6 +5,7 @@ libpciaccess (0.10.6-2) UNRELEASED; urgency=low
   * debian/rules: clean out libtool m4 files.
   * Make glob in debian/libpciaccess0.install more strict.
   * Add README.source pointing at the quilt package.
+  * Bump Standards-Version to 3.8.2.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 08 Aug 2009 18:23:59 +0200
 
