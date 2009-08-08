@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
 Uploaders: Julien Cristau <jcristau@debian.org>, David Nusinow <dnusinow@debian.org>
 Build-Depends:
- debhelper,
+ debhelper (>= 5),
  quilt,
  libtool,
  automake,
