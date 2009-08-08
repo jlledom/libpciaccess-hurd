@@ -4,6 +4,7 @@ libpciaccess (0.10.6-2) UNRELEASED; urgency=low
     without a PCI interface, such as GNU/Hurd (closes: #524111).
   * debian/rules: clean out libtool m4 files.
   * Make glob in debian/libpciaccess0.install more strict.
+  * Add README.source pointing at the quilt package.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 08 Aug 2009 18:23:59 +0200
 
