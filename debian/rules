@@ -59,6 +59,7 @@ clean: unpatch
 	rm -f $$(find -name Makefile.in)
 	rm -f compile config.guess config.sub configure depcomp install-sh
 	rm -f ltmain.sh missing INSTALL aclocal.m4 mkinstalldirs config.h.in
+	rm -f m4/libtool.m4 m4/lt*.m4
 	
 	dh_clean
 
