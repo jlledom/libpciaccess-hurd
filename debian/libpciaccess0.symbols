@@ -12,6 +12,14 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_probe@Base 0
  pci_device_cfg_write@Base 0
  pci_device_unmap_region@Base 0
+ pci_device_vgaarb_decodes@Base 0.10.7
+ pci_device_vgaarb_fini@Base 0.10.7
+ pci_device_vgaarb_get_info@Base 0.10.7
+ pci_device_vgaarb_init@Base 0.10.7
+ pci_device_vgaarb_lock@Base 0.10.7
+ pci_device_vgaarb_set_target@Base 0.10.7
+ pci_device_vgaarb_trylock@Base 0.10.7
+ pci_device_vgaarb_unlock@Base 0.10.7
  pci_device_cfg_read_u16@Base 0
  pci_device_get_device_name@Base 0
  pci_device_find_by_slot@Base 0
@@ -33,4 +41,6 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_get_bridge_buses@Base 0
  pci_device_cfg_write_bits@Base 0
  pci_device_get_vendor_name@Base 0
+ pci_device_has_kernel_driver@Base 0.10.7
+ pci_device_is_boot_vga@Base 0.10.7
  pci_device_cfg_read@Base 0
