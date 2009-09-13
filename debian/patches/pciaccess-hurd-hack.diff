@@ -9,8 +9,8 @@ Index: libpciaccess/src/Makefile.am
 ===================================================================
 --- libpciaccess.orig/src/Makefile.am
 +++ libpciaccess/src/Makefile.am
-@@ -45,6 +45,10 @@
- OS_SUPPORT = solx_devfs.c pci_tools.h
+@@ -51,6 +51,10 @@
+ VGA_ARBITER = common_vgaarb_stub.c
  endif
  
 +if GNU
@@ -24,7 +24,7 @@ Index: libpciaccess/configure.ac
 ===================================================================
 --- libpciaccess.orig/configure.ac
 +++ libpciaccess/configure.ac
-@@ -81,6 +81,9 @@
+@@ -89,6 +89,9 @@
  		solaris=yes
  		PCIACCESS_LIBS="$PCIACCESS_LIBS -ldevinfo"
  		;;
@@ -34,7 +34,7 @@ Index: libpciaccess/configure.ac
  esac
  
  AM_CONDITIONAL(LINUX, [test "x$linux" = xyes])
-@@ -88,6 +91,7 @@
+@@ -96,6 +99,7 @@
  AM_CONDITIONAL(NETBSD, [test "x$netbsd" = xyes])
  AM_CONDITIONAL(OPENBSD, [test "x$openbsd" = xyes])
  AM_CONDITIONAL(SOLARIS, [test "x$solaris" = xyes])
@@ -59,7 +59,7 @@ Index: libpciaccess/src/pciaccess_private.h
 ===================================================================
 --- libpciaccess.orig/src/pciaccess_private.h
 +++ libpciaccess/src/pciaccess_private.h
-@@ -140,3 +140,4 @@
+@@ -146,3 +146,4 @@
  extern int pci_system_openbsd_create( void );
  extern void pci_system_openbsd_init_dev_mem( int );
  extern int pci_system_solx_devfs_create( void );
