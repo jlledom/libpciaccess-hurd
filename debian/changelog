@@ -1,10 +1,10 @@
-libpciaccess (0.10.9-1) UNRELEASED; urgency=low
+libpciaccess (0.10.9-1) unstable; urgency=low
 
   * New upstream release.
   * Refresh pciaccess-hurd-hack.diff.
   * Update shlibs and symbols file.
 
- -- Julien Cristau <jcristau@debian.org>  Sun, 13 Sep 2009 20:54:37 +0200
+ -- Julien Cristau <jcristau@debian.org>  Mon, 28 Sep 2009 18:29:27 +0200
 
 libpciaccess (0.10.6-2) unstable; urgency=low
 
