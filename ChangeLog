@@ -1,3 +1,50 @@
+commit 97d677746cd70ec9eb1f33483cc829a0063953bc
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Fri Sep 25 10:25:56 2009 +1000
+
+    shutup stupid gcc warning, strtok_r ignores the first parameter
+
+commit 2a10d510d24c7c0aebb03914dd887f9e92cfa754
+Author: Dave Airlie <airlied@redhat.com>
+Date:   Fri Sep 25 10:19:07 2009 +1000
+
+    libpciaccess 0.10.9
+
+commit 1714046ef08ef685bcf1d6c154e64809b12e8d7f
+Author: Tiago Vignatti <tiago.vignatti@nokia.com>
+Date:   Fri Sep 18 15:21:19 2009 +0300
+
+    vgaarb: fix newbie typo
+    
+    Eh, we don't need to check for the fd anyway. Kudos jcristau for reporting.
+    
+    Signed-off-by: Tiago Vignatti <tiago.vignatti@nokia.com>
+
+commit 13c7e6c8f100882718f995f5bf1d478a012cdbdd
+Author: Tiago Vignatti <tiago.vignatti@nokia.com>
+Date:   Wed Sep 16 12:56:53 2009 +0300
+
+    vgaarb: check for fd before close it
+    
+    Signed-off-by: Tiago Vignatti <tiago.vignatti@nokia.com>
+
+commit cdbdfaf61c05d0d18eae6815b10666f93162148f
+Author: Keith Packard <keithp@keithp.com>
+Date:   Thu Sep 17 17:38:56 2009 -0700
+
+    Free return value from scandir instead of leaking it.
+    
+    Scandir is defined to return pointers to malloc'd storage, so make
+    sure that memory is nicely freed.
+    
+    Signed-off-by: Keith Packard <keithp@keithp.com>
+
+commit 42b879a203c1c16daa9d0c610c6a217ead7a5829
+Author: Dave Airlie <airlied@linux.ie>
+Date:   Wed Sep 2 19:03:11 2009 +1000
+
+    vgaarb: check pci_sys exists before initing vga arb
+
 commit 312cde3c2f3530b031134cfb53a8a54731f02b1b
 Author: Dave Airlie <airlied@redhat.com>
 Date:   Mon Aug 31 09:14:16 2009 +1000
