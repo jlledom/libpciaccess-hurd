@@ -42,7 +42,7 @@ static int
 parse_string_to_decodes_rsrc(char *input, int *vga_count, struct pci_slot_match *match)
 {
     char *tok;
-    char *input_sp, *count_sp, *pci_sp;
+    char *input_sp = NULL, *count_sp, *pci_sp;
     char tmp[32];
 
     tok = strtok_r(input,",",&input_sp);
@@ -124,6 +124,10 @@ pci_device_vgaarb_init(void)
     struct pci_slot_match match;
     char buf[BUFSIZE];
     int ret, rsrc;
+
+    if (!pci_sys)
+        return -1;
+
     if ((pci_sys->vgaarb_fd = open ("/dev/vga_arbiter", O_RDWR)) < 0) {
         return errno;
     }
@@ -146,6 +150,9 @@ pci_device_vgaarb_init(void)
 void
 pci_device_vgaarb_fini(void)
 {
+    if (!pci_sys)
+        return;
+
     close(pci_sys->vgaarb_fd);
 }
 
