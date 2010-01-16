@@ -9,7 +9,7 @@ Build-Depends:
  libtool,
  automake,
  zlib1g-dev,
- xutils-dev ( >= 1:7.4+4 )
+ xutils-dev (>= 1:7.5),
 Standards-Version: 3.8.2
 Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/lib/libpciaccess.git

@@ -1,6 +1,7 @@
 libpciaccess (0.11.0-1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * Bump xutils-dev build-dep for util-macros 1.4.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 02 Jan 2010 09:49:25 +0000
 
