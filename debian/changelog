@@ -1,4 +1,4 @@
-libpciaccess (0.11.0-1) UNRELEASED; urgency=low
+libpciaccess (0.11.0-1) unstable; urgency=low
 
   * New upstream release.
   * Bump xutils-dev build-dep for util-macros 1.4.
@@ -9,7 +9,7 @@ libpciaccess (0.11.0-1) UNRELEASED; urgency=low
   * Add build-dep on pkg-config.
   * Bump Standards-Version to 3.8.3.
 
- -- Julien Cristau <jcristau@debian.org>  Sat, 02 Jan 2010 09:49:25 +0000
+ -- Julien Cristau <jcristau@debian.org>  Sun, 17 Jan 2010 14:36:38 +0000
 
 libpciaccess (0.10.9-1) unstable; urgency=low
 
