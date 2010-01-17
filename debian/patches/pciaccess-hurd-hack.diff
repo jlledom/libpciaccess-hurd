@@ -24,7 +24,7 @@ Index: libpciaccess/configure.ac
 ===================================================================
 --- libpciaccess.orig/configure.ac
 +++ libpciaccess/configure.ac
-@@ -89,6 +89,9 @@
+@@ -90,6 +90,9 @@
  		solaris=yes
  		PCIACCESS_LIBS="$PCIACCESS_LIBS -ldevinfo"
  		;;
@@ -34,7 +34,7 @@ Index: libpciaccess/configure.ac
  esac
  
  AM_CONDITIONAL(LINUX, [test "x$linux" = xyes])
-@@ -96,6 +99,7 @@
+@@ -97,6 +100,7 @@
  AM_CONDITIONAL(NETBSD, [test "x$netbsd" = xyes])
  AM_CONDITIONAL(OPENBSD, [test "x$openbsd" = xyes])
  AM_CONDITIONAL(SOLARIS, [test "x$solaris" = xyes])
@@ -59,11 +59,12 @@ Index: libpciaccess/src/pciaccess_private.h
 ===================================================================
 --- libpciaccess.orig/src/pciaccess_private.h
 +++ libpciaccess/src/pciaccess_private.h
-@@ -146,3 +146,4 @@
+@@ -167,4 +167,5 @@
  extern int pci_system_openbsd_create( void );
  extern void pci_system_openbsd_init_dev_mem( int );
  extern int pci_system_solx_devfs_create( void );
 +extern int pci_system_x86_create( void );
+ extern void pci_io_cleanup( void );
 Index: libpciaccess/src/x86_pci.c
 ===================================================================
 --- /dev/null
