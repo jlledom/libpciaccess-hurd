@@ -11,7 +11,7 @@ Build-Depends:
  zlib1g-dev,
  xutils-dev (>= 1:7.5),
  pkg-config,
-Standards-Version: 3.8.2
+Standards-Version: 3.8.3
 Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/lib/libpciaccess.git
 
