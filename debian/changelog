@@ -5,6 +5,7 @@ libpciaccess (0.11.0-1) UNRELEASED; urgency=low
   * Rename the build directory to not include DEB_BUILD_GNU_TYPE for no
     good reason.  Thanks, Colin Watson!
   * Refresh pciaccess-hurd-hack.diff.
+  * Update libpciaccess0.symbols and bump shlibs.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 02 Jan 2010 09:49:25 +0000
 

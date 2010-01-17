@@ -44,3 +44,13 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_has_kernel_driver@Base 0.10.7
  pci_device_is_boot_vga@Base 0.10.7
  pci_device_cfg_read@Base 0
+ pci_device_get_parent_bridge@Base 0.11.0
+ pci_device_open_io@Base 0.11.0
+ pci_device_close_io@Base 0.11.0
+ pci_legacy_open_io@Base 0.11.0
+ pci_io_read8@Base 0.11.0
+ pci_io_read16@Base 0.11.0
+ pci_io_read32@Base 0.11.0
+ pci_io_write8@Base 0.11.0
+ pci_io_write16@Base 0.11.0
+ pci_io_write32@Base 0.11.0
