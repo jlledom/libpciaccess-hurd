@@ -1,3 +1,9 @@
+libpciaccess (0.11.0-2) UNRELEASED; urgency=low
+
+  * Remove myself from Uploaders
+
+ -- Julien Cristau <jcristau@debian.org>  Sat, 23 Jan 2010 01:43:04 +0100
+
 libpciaccess (0.11.0-1) unstable; urgency=low
 
   * New upstream release.
