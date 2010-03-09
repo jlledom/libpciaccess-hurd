@@ -24,6 +24,15 @@ Description: Generic PCI access library for X
  Provides functionality for X to access the PCI bus and devices
  in a platform-independant way.
 
+Package: libpciaccess0-udeb
+XC-Package-Type: udeb
+Section: debian-installer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Suggests: pciutils
+Description: Generic PCI access library for X
+ This is a udeb, or a microdeb, for the debian-installer.
+
 Package: libpciaccess-dev
 Section: libdevel
 Architecture: any

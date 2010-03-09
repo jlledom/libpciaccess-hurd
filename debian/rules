@@ -83,7 +83,7 @@ binary-arch: build install
 	dh_strip #--dbg-package=$(PACKAGE)-dbg
 	dh_compress
 	dh_fixperms
-	dh_makeshlibs -V'libpciaccess0 (>= 0.11.0)'
+	dh_makeshlibs -V'libpciaccess0 (>= 0.11.0)' --add-udeb=$(PACKAGE)-udeb
 	dh_shlibdeps
 	dh_installdeb
 	dh_gencontrol
