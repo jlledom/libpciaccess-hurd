@@ -5,6 +5,7 @@ libpciaccess (0.11.0-2) UNRELEASED; urgency=low
 
   [ Cyril Brulebois ]
   * Add udeb needed for the graphical installer: libpciaccess0-udeb.
+  * Add myself to Uploaders.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 23 Jan 2010 01:43:04 +0100
 
