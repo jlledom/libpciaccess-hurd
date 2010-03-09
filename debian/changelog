@@ -1,4 +1,4 @@
-libpciaccess (0.11.0-2) UNRELEASED; urgency=low
+libpciaccess (0.11.0-2) unstable; urgency=low
 
   [ Julien Cristau ]
   * Remove myself from Uploaders
@@ -8,7 +8,7 @@ libpciaccess (0.11.0-2) UNRELEASED; urgency=low
   * Add myself to Uploaders.
   * Bump Standards-Version from 3.7.3 to 3.8.4 (no changes needed).
 
- -- Julien Cristau <jcristau@debian.org>  Sat, 23 Jan 2010 01:43:04 +0100
+ -- Cyril Brulebois <kibi@debian.org>  Tue, 09 Mar 2010 02:05:55 +0100
 
 libpciaccess (0.11.0-1) unstable; urgency=low
 
