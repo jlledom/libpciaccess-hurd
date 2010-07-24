@@ -1,3 +1,12 @@
+libpciaccess (0.12.0-1) UNRELEASED; urgency=low
+
+  * New upstream release:
+    - x86 backend for hurd
+    - various fixes for vgaarb, leak, use after free
+    - fix long standing MTRR bug
+
+ -- Julien Cristau <jcristau@debian.org>  Sat, 24 Jul 2010 10:46:59 +0200
+
 libpciaccess (0.11.0-2) unstable; urgency=low
 
   [ Julien Cristau ]
