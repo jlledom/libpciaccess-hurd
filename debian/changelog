@@ -4,6 +4,7 @@ libpciaccess (0.12.0-1) UNRELEASED; urgency=low
     - x86 backend for hurd
     - various fixes for vgaarb, leak, use after free
     - fix long standing MTRR bug
+  * Drop pciaccess-hurd-hack.diff and patch system.
 
  -- Julien Cristau <jcristau@debian.org>  Sat, 24 Jul 2010 10:46:59 +0200
 

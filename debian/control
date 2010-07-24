@@ -5,7 +5,6 @@ Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
 Uploaders: David Nusinow <dnusinow@debian.org>, Cyril Brulebois <kibi@debian.org>
 Build-Depends:
  debhelper (>= 5),
- quilt,
  libtool,
  automake,
  zlib1g-dev,
