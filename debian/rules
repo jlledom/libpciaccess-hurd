@@ -41,8 +41,7 @@ build: build-stamp
 build-stamp: build/config.status
 	dh_testdir
 	cd build && $(MAKE)
-	
-	touch build-stamp
+	>$@
 
 clean:
 	dh_testdir
@@ -54,7 +53,7 @@ clean:
 	rm -f conftest* */conftest*
 	rm -rf autom4te.cache */autom4te.cache
 	rm -rf build
-	rm -f $$(find -name Makefile.in)
+	find -name Makefile.in -delete
 	rm -f compile config.guess config.sub configure depcomp install-sh
 	rm -f ltmain.sh missing INSTALL aclocal.m4 mkinstalldirs config.h.in
 	rm -f m4/libtool.m4 m4/lt*.m4
