@@ -1,10 +1,10 @@
-libpciaccess (0.12.1-1) UNRELEASED; urgency=low
+libpciaccess (0.12.1-1) unstable; urgency=low
 
   * New upstream release.
   * Bump Standards-Version to 3.9.1 (no changes).
   * debian/copyright: Sun's copyrights belong to Oracle now.
 
- -- Julien Cristau <jcristau@debian.org>  Sun, 06 Feb 2011 15:55:49 +0100
+ -- Julien Cristau <jcristau@debian.org>  Sun, 06 Feb 2011 16:09:22 +0100
 
 libpciaccess (0.12.0-1) unstable; urgency=low
 
