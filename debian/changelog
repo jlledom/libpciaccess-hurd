@@ -1,3 +1,9 @@
+libpciaccess (0.12.1-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 06 Feb 2011 15:55:49 +0100
+
 libpciaccess (0.12.0-1) unstable; urgency=low
 
   * New upstream release:
