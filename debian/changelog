@@ -1,6 +1,7 @@
 libpciaccess (0.12.1-1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * Bump Standards-Version to 3.9.1 (no changes).
 
  -- Julien Cristau <jcristau@debian.org>  Sun, 06 Feb 2011 15:55:49 +0100
 
