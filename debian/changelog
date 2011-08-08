@@ -1,6 +1,8 @@
 libpciaccess (0.12.1-2) UNRELEASED; urgency=low
 
-  * Switch to dh and compat 7.
+  * Switch to dh.
+  * Switch to debhelper compat 9 and build multiarch libraries.
+  * Add lintian override for not-yet-finalised debhelper compat level.
   * Bump standards version to 3.9.2 (no changes).
 
  -- Christopher James Halse Rogers <raof@ubuntu.com>  Mon, 08 Aug 2011 12:41:42 +1000
