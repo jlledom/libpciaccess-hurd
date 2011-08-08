@@ -1,3 +1,9 @@
+libpciaccess (0.12.1-2) UNRELEASED; urgency=low
+
+  * Switch to dh and compat 7.
+
+ -- Christopher James Halse Rogers <raof@ubuntu.com>  Mon, 08 Aug 2011 12:41:42 +1000
+
 libpciaccess (0.12.1-1) unstable; urgency=low
 
   * New upstream release.
