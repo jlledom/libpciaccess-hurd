@@ -38,6 +38,8 @@ Description: Generic PCI access library for X
 Package: libpciaccess-dev
 Section: libdevel
 Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Multi-Arch: same
 Depends: libpciaccess0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Generic PCI access library for X - development files
  Provides functionality for X to access the PCI bus and devices
