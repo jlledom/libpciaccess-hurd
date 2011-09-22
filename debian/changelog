@@ -2,7 +2,8 @@ libpciaccess (0.12.1-2) unstable; urgency=low
 
   [ Christopher James Halse Rogers ]
   * Switch to dh.
-  * Switch to debhelper compat 9 and build multiarch libraries.
+  * Switch to debhelper compat 9 and build multiarch libraries (closes:
+    #635251).
   * Add lintian override for not-yet-finalised debhelper compat level.
   * Bump standards version to 3.9.2 (no changes).
 
