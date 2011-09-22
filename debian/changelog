@@ -1,9 +1,16 @@
 libpciaccess (0.12.1-2) UNRELEASED; urgency=low
 
+  [ Christopher James Halse Rogers ]
   * Switch to dh.
   * Switch to debhelper compat 9 and build multiarch libraries.
   * Add lintian override for not-yet-finalised debhelper compat level.
   * Bump standards version to 3.9.2 (no changes).
+
+  [ Julien Cristau ]
+  * Cherry-pick a couple patches from upstream git to:
+    - not return garbage from read/write on eof
+    - fix a crash in populate_entries if scandir(/sys/bus/pci) returns an
+      error
 
  -- Christopher James Halse Rogers <raof@ubuntu.com>  Mon, 08 Aug 2011 12:41:42 +1000
 
