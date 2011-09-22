@@ -1,4 +1,4 @@
-libpciaccess (0.12.1-2) UNRELEASED; urgency=low
+libpciaccess (0.12.1-2) unstable; urgency=low
 
   [ Christopher James Halse Rogers ]
   * Switch to dh.
@@ -12,7 +12,7 @@ libpciaccess (0.12.1-2) UNRELEASED; urgency=low
     - fix a crash in populate_entries if scandir(/sys/bus/pci) returns an
       error
 
- -- Christopher James Halse Rogers <raof@ubuntu.com>  Mon, 08 Aug 2011 12:41:42 +1000
+ -- Julien Cristau <jcristau@debian.org>  Thu, 22 Sep 2011 21:37:55 +0200
 
 libpciaccess (0.12.1-1) unstable; urgency=low
 
