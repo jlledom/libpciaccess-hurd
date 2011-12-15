@@ -1,4 +1,4 @@
-libpciaccess (0.12.902-1) UNRELEASED; urgency=low
+libpciaccess (0.12.902-1) unstable; urgency=low
 
   * New upstream release candidate.
   * Add -c4 to dh_makeshlibs.
@@ -7,7 +7,7 @@ libpciaccess (0.12.902-1) UNRELEASED; urgency=low
   * Use --parallel to simplify parallel build handling.
   * Use dpkg-buildflags to set CFLAGS automatically.
 
- -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Dec 2011 15:30:29 +0100
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Dec 2011 15:55:57 +0100
 
 libpciaccess (0.12.1-2) unstable; urgency=low
 
