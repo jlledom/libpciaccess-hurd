@@ -22,6 +22,7 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_get_vendor_name@Base 0
  pci_device_has_kernel_driver@Base 0.10.7
  pci_device_is_boot_vga@Base 0.10.7
+ pci_device_map_legacy@Base 0.12.902
  pci_device_map_memory_range@Base 0
  pci_device_map_range@Base 0.8.0+git20071002
  pci_device_map_region@Base 0
@@ -29,6 +30,7 @@ libpciaccess.so.0 libpciaccess0 #MINVER#
  pci_device_open_io@Base 0.11.0
  pci_device_probe@Base 0
  pci_device_read_rom@Base 0
+ pci_device_unmap_legacy@Base 0.12.902
  pci_device_unmap_memory_range@Base 0
  pci_device_unmap_range@Base 0.8.0+git20071002
  pci_device_unmap_region@Base 0

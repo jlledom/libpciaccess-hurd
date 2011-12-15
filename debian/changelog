@@ -3,6 +3,7 @@ libpciaccess (0.12.902-1) UNRELEASED; urgency=low
   * New upstream release candidate.
   * Add -c4 to dh_makeshlibs.
   * Sort libpciaccess0.symbols.
+  * Add pci_device_{,un}map_legacy symbols, and bump shlibs accordingly.
 
  -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Dec 2011 15:30:29 +0100
 
