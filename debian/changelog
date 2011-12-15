@@ -1,3 +1,9 @@
+libpciaccess (0.12.902-1) UNRELEASED; urgency=low
+
+  * New upstream release candidate.
+
+ -- Cyril Brulebois <kibi@debian.org>  Thu, 15 Dec 2011 15:30:29 +0100
+
 libpciaccess (0.12.1-2) unstable; urgency=low
 
   [ Christopher James Halse Rogers ]

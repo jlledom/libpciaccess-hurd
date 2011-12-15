@@ -1,3 +1,181 @@
+commit 78eed07d599ff9e30c075aa7c8d1795e125ffc4b
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Wed Nov 9 09:27:49 2011 -0800
+
+    configure.ac: Bump to 0.12.902
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit cbb3c63affc1792ade0433691aa67f0edad52b0b
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Wed Nov 9 09:46:30 2011 -0800
+
+    Fix some -Wformat errors in scanpci
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit a0a53a67c91c698007dcac3e7aba27c999c4f6ed
+Author: Nithin Nayak Sujir <nsujir@broadcom.com>
+Date:   Mon Oct 24 12:15:15 2011 -0700
+
+    libpciaccess: close mtrr fd on pci_cleanup
+    
+    Since the fd is not closed, calling pci_system_init and
+    pci_system_cleanup more than 1024 times results in "too many files open"
+    error.
+    
+    Signed-off-by: Nithin Nayak Sujir <nsujir@broadcom.com>
+    Reviewed-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 803bf3aa28de0f1260e479e2036159d4fead0a87
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Tue Oct 4 21:46:05 2011 -0700
+
+    Solaris: Give better error on realloc failure
+    
+    commit a18460b385ae03 converted from a fixed maximum number of devices
+    to dynamically growing the list via realloc, but didn't update the
+    error message shown on failure.
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Reviewed-by: Dirk Wallenstein <halsmit@t-online.de>
+    Reviewed-by: Mark Kettenis <kettenis@openbsd.org>
+
+commit af4478c52c960bee08209293aa14b784ac30dc05
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Tue Oct 11 10:22:49 2011 -0700
+
+    linux sysfs: Fix read-write access in map_legacy
+    
+    O_RDONLY | O_WRONLY != O_RDWR
+    
+    ><
+    
+    Reported-by: Javier Pello <javier.pello@urjc.es>
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit b9c5ce8083be53ea017bd15a63b173b4476fff23
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Sun Oct 9 03:53:05 2011 -0700
+
+    scanpci: Build fix for systems without <err.h>
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=31133
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 30e9ec91107791835d722f99498d659dec048922
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Fri Oct 7 11:57:26 2011 -0700
+
+    configure.ac: Bump version to 0.12.901
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 12dbf6d2d346cfe7ba8b2a1697c56af3f9876be7
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Fri Oct 7 11:56:06 2011 -0700
+
+    Update library version to reflect new API
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 58e87933b3286f33cdeedd3a6b21f4ea795bea47
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Tue May 10 17:56:35 2011 -0400
+
+    linux: Implement map_legacy
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
+    Reviewed-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 8cc9a8fe57adfb52abaa90a8a2ac2316de8eb898
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Tue May 10 17:56:34 2011 -0400
+
+    Add map_legacy interface
+    
+    This allows platforms to hand back mmaps of the low 1M (ISA) address
+    space on a per-domain basis.
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
+    Reviewed-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit e1a0240a3d6840b497845680c2bf6753415ba20f
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Fri Sep 16 22:11:38 2011 -0700
+
+    Strip trailing whitespace
+    
+    Performed with: find * -type f | xargs perl -i -p -e 's{[ \t]+$}{}'
+    git diff -w & git diff -b show no diffs from this change
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 7bfc4f806d51b85e7ae069dd6deaf0b48326ed22
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Wed Aug 3 18:35:11 2011 -0400
+
+    linux: Fix a crash in populate_devices
+    
+    If scandir returns -1, the 'devices' array won't be initialized, and
+    attempting to free() it will crash.
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
+
+commit f9159b97834ba4b4e42a07953a33866e7ac90dbd
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Sat Jun 4 12:30:06 2011 +0100
+
+    linux: Only set errno after an error
+    
+    errno is only valid after an error, and was being filled with a garbage
+    value upon eof.
+    
+    Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+
+commit a18460b385ae034830e4efbaaed7e0665c53ad9f
+Author: John Martin <John.M.Martin@Oracle.COM>
+Date:   Mon Mar 28 17:51:19 2011 -0700
+
+    Solaris support for multiple PCI segments (domains)
+    
+    1. Removed hardcoded maximum size of 256 PCI devices, which is
+    too small for large systems.  The number of devices is dynamically
+    resized as needed.
+    
+    2. pci_device_solx_devfs_probe() no longer walks the device tree
+    from the very top ("/") but instead starts at the nexus which
+    owns the bus.  Performance optimization for systems with multiple
+    bus nodes (including systems with just one segment/domain).
+    
+    3. Added support for multiple domains/segments.  Code tested
+    on kernels with and without multiple segment support so it should
+    be safe to integrate independent of the kernel version.
+    
+    Signed-off-by: John Martin <John.M.Martin@Oracle.COM>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Reviewed-by: Adam Jackson <ajax@redhat.com>
+
+commit f3e283a25f5fca4f750bb9538d69c4f36641cca5
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Thu Feb 3 17:38:32 2011 -0500
+
+    config: comment, minor upgrade, quote and layout configure.ac
+    
+    Group statements per section as per Autoconf standard layout
+    Quote statements where appropriate.
+    Autoconf recommends not using dnl instead of # for comments
+    
+    Use AC_CONFIG_FILES to replace the deprecated AC_OUTPUT with parameters.
+    Add AC_CONFIG_SRCDIR([Makefile.am])
+    Update X.Org util-macros to version 1.8
+    
+    This helps automated maintenance and release activities.
+    Details can be found in http://wiki.x.org/wiki/NewModuleGuidelines
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
 commit d05ed57216726811388f17d7e87d7b6c7b8580ee
 Author: Alan Coopersmith <alan.coopersmith@oracle.com>
 Date:   Wed Feb 2 20:50:17 2011 -0800
