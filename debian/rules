@@ -27,4 +27,4 @@ override_dh_install:
 	dh_install --fail-missing
 
 override_dh_makeshlibs:
-	dh_makeshlibs -V'libpciaccess0 (>= 0.11.0)' --add-udeb=$(PACKAGE)-udeb
+	dh_makeshlibs -V'libpciaccess0 (>= 0.11.0)' --add-udeb=$(PACKAGE)-udeb -- -c4
