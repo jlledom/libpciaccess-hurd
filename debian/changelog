@@ -1,3 +1,9 @@
+libpciaccess (0.13-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Cyril Brulebois <kibi@debian.org>  Sun, 04 Mar 2012 09:48:43 +0100
+
 libpciaccess (0.12.902-1) unstable; urgency=low
 
   * New upstream release candidate.
