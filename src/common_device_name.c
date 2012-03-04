@@ -69,7 +69,7 @@ pci_id_file_open(void)
 #define pci_id_file_gets(l, s, f)	gzgets(f, l, s)
 #define pci_id_file_close(f)		gzclose(f)
 #else
-typedef FILE pci_id_file;
+typedef FILE * pci_id_file;
 #define pci_id_file_open()		fopen(PCIIDS_PATH "/pci.ids", "r")
 #define pci_id_file_gets(l, s, f)	fgets(l, s, f)
 #define pci_id_file_close(f)		fclose(f)
@@ -189,7 +189,7 @@ insert( uint16_t vendor )
 static void
 populate_vendor( struct pci_id_leaf * vend, int fill_device_data )
 {
-    pci_id_file * f;
+    pci_id_file f;
     char buf[128];
     unsigned vendor = PCI_MATCH_ANY;
 
@@ -269,7 +269,7 @@ populate_vendor( struct pci_id_leaf * vend, int fill_device_data )
 	    d = realloc( vend->devices, (vend->num_devices + 1)
 			 * sizeof( struct pci_device_leaf ) );
 	    if ( d == NULL ) {
-		return;
+		goto cleanup;
 	    }
 
 	    last_dev = & d[ vend->num_devices - 1 ];
@@ -302,6 +302,7 @@ populate_vendor( struct pci_id_leaf * vend, int fill_device_data )
 	}
     }
 
+  cleanup:
     pci_id_file_close( f );
 }
 
