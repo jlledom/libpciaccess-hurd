@@ -1,3 +1,54 @@
+commit 2ff2996dcb4cfd83da6df4504b68b492b983204b
+Author: Julien Cristau <jcristau@debian.org>
+Date:   Mon Apr 9 19:05:27 2012 +0200
+
+    Bump to 0.13.1
+    
+    Signed-off-by: Julien Cristau <jcristau@debian.org>
+
+commit 6f9d9f1e1b093939bc459be606fba72f1d6dfc76
+Author: Matthieu Herrb <matthieu.herrb@laas.fr>
+Date:   Mon Apr 2 08:22:23 2012 +0200
+
+    Fix pci_io_handle allocation routines.
+    
+    The previous version of new_io_handle()  would invalidate all previous
+    allocations when realloc moves the base pointer of the ios array.
+    Since I cannot figure out where this array is useful, just get rid of
+    it, providing sound stable memory allocation.
+    
+    Fixes vgaHWSaveFonts() in 1.12 xserver on OpenBSD, but other
+    sub-systems relaying on pci_io could be affected too.
+    
+    Signed-off-by: Matthieu Herrb <matthieu.herrb@laas.fr>
+    Tested-by: Tormod Volden <debian.tormod@gmail.com>
+
+commit 725f5669bc03ed9a766e2c51c465e082172e6dae
+Author: Thordur Bjornsson <thib@secnorth.net>
+Date:   Wed Mar 14 14:45:52 2012 +0100
+
+    Fix openbsd_pci.c:pci_device_vgaarb_set_target();
+    
+    A return (0) got lost, add it back.
+    
+    Signed-off-by: Matthieu Herrb <matthieu.herrb@laas.fr>
+    Reviewed-by:  Mark Kettenis <mark.kettenis@xs4all.nl>
+
+commit b16336c0b389ace07f7418f5a021bfbc68fec2b6
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Mon Mar 5 11:01:01 2012 -0500
+
+    linux: Fix out[bwl] macros on non-I/O architectures
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
+
+commit fa15fbcdbcfed09ea269ca3fb5f0e3dc2446e66f
+Merge: d2dc9f9 bf70556
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Mon Mar 5 11:00:14 2012 -0500
+
+    Merge branch 'master' of ssh://git.freedesktop.org/git/xorg/lib/libpciaccess
+
 commit bf705561d347bc5459bc0af033595c66541cac3e
 Author: Jeremy Huddleston <jeremyhu@apple.com>
 Date:   Sat Mar 3 18:19:11 2012 -0800
@@ -5,6 +56,18 @@ Date:   Sat Mar 3 18:19:11 2012 -0800
     configure.ac: Bump to 0.13
     
     Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit d2dc9f9daa45504f035b169aba94d0b154fd29f0
+Author: Adam Jackson <ajax@redhat.com>
+Date:   Mon Feb 27 11:19:50 2012 -0500
+
+    Use O_CLOEXEC for internal file descriptors
+    
+    Well, almost all of them.  zlib doesn't support "e" in the mode string
+    in gzopen() though it will silently accept and ignore it, and Solaris appears
+    not to support "e" in the mode string at all.
+    
+    Signed-off-by: Adam Jackson <ajax@redhat.com>
 
 commit f550c1347d3518874fe1c1d417a57322ee6b52db
 Author: Adam Jackson <ajax@redhat.com>
