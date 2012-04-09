@@ -1,9 +1,9 @@
-libpciaccess (0.13.1-1) UNRELEASED; urgency=low
+libpciaccess (0.13.1-1) unstable; urgency=low
 
   * New upstream release
     - fix FTBFS due to broken out[bwl] macros on non-I/O architectures
 
- -- Julien Cristau <jcristau@debian.org>  Mon, 09 Apr 2012 19:54:22 +0200
+ -- Julien Cristau <jcristau@debian.org>  Mon, 09 Apr 2012 19:55:26 +0200
 
 libpciaccess (0.13-1) unstable; urgency=low
 
