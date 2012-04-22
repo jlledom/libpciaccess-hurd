@@ -11,6 +11,7 @@ Build-Depends:
  xutils-dev (>= 1:7.5),
  pkg-config,
  dh-autoreconf,
+ quilt (>= 0.46-7),
 Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/git/pkg-xorg/lib/libpciaccess
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/lib/libpciaccess.git
