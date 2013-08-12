@@ -1,6 +1,7 @@
 libpciaccess (0.13.2-1) UNRELEASED; urgency=low
 
   * New upstream release.
+    - FreeBSD map_legacy and legacy_io patch is now upstream
   * Update d/copyright from COPYING.
 
  -- Julien Cristau <jcristau@debian.org>  Mon, 12 Aug 2013 12:00:23 +0200
