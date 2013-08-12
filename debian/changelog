@@ -1,3 +1,9 @@
+libpciaccess (0.13.2-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Julien Cristau <jcristau@debian.org>  Mon, 12 Aug 2013 12:00:23 +0200
+
 libpciaccess (0.13.1-2) unstable; urgency=medium
 
   * FreeBSD: implement map_legacy and legacy_io (closes: #669062).  Thanks,
