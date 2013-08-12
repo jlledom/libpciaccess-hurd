@@ -1,11 +1,11 @@
-libpciaccess (0.13.2-1) UNRELEASED; urgency=low
+libpciaccess (0.13.2-1) unstable; urgency=low
 
   * New upstream release.
     - FreeBSD legacy map and io patch is now upstream
     - implements hurd legacy map and io (closes: #675289)
   * Update d/copyright from COPYING.
 
- -- Julien Cristau <jcristau@debian.org>  Mon, 12 Aug 2013 12:00:23 +0200
+ -- Julien Cristau <jcristau@debian.org>  Mon, 12 Aug 2013 12:10:47 +0200
 
 libpciaccess (0.13.1-2) unstable; urgency=medium
 
