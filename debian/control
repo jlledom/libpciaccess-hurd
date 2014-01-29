@@ -25,7 +25,7 @@ Pre-Depends: ${misc:Pre-Depends}
 Multi-Arch: same
 Description: Generic PCI access library for X
  Provides functionality for X to access the PCI bus and devices
- in a platform-independant way.
+ in a platform-independent way.
 
 Package: libpciaccess0-udeb
 XC-Package-Type: udeb
@@ -44,6 +44,6 @@ Multi-Arch: same
 Depends: libpciaccess0 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: Generic PCI access library for X - development files
  Provides functionality for X to access the PCI bus and devices
- in a platform-independant way.
+ in a platform-independent way.
  .
  This package contains the development files for libpciaccess.
