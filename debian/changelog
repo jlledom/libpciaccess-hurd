@@ -1,10 +1,10 @@
-libpciaccess (0.13.2-3) UNRELEASED; urgency=medium
+libpciaccess (0.13.2-3) unstable; urgency=medium
 
   * Remove David and Cyril from Uploaders.
   * Bump debhelper build-dep to 9, drop lintian override.
   * Disable silent build rules.
 
- -- Julien Cristau <jcristau@debian.org>  Sat, 12 Jul 2014 16:17:37 +0200
+ -- Julien Cristau <jcristau@debian.org>  Sat, 12 Jul 2014 16:25:55 +0200
 
 libpciaccess (0.13.2-2) unstable; urgency=low
 
