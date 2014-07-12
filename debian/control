@@ -2,7 +2,6 @@ Source: libpciaccess
 Section: devel
 Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
-Uploaders: David Nusinow <dnusinow@debian.org>, Cyril Brulebois <kibi@debian.org>
 Build-Depends:
  debhelper (>= 8.1.3),
  libtool,

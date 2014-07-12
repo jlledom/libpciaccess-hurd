@@ -1,3 +1,9 @@
+libpciaccess (0.13.2-3) UNRELEASED; urgency=medium
+
+  * Remove David and Cyril from Uploaders.
+
+ -- Julien Cristau <jcristau@debian.org>  Sat, 12 Jul 2014 16:17:37 +0200
+
 libpciaccess (0.13.2-2) unstable; urgency=low
 
   [ Robert Hooker ]
