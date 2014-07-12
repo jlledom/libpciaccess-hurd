@@ -9,6 +9,7 @@ CFLAGS = $(shell dpkg-buildflags --get CFLAGS)
 
 override_dh_auto_configure:
 	dh_auto_configure -- \
+		--disable-silent-rules \
 		--with-pciids-path=\$${prefix}/share/misc \
 		--with-zlib \
 		CFLAGS="$(CFLAGS)"
