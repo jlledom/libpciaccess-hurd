@@ -1,9 +1,10 @@
-libpciaccess (0.13.2-2) UNRELEASED; urgency=low
+libpciaccess (0.13.2-2) unstable; urgency=low
 
+  [ Robert Hooker ]
   * Fix typo in libpciaccess0 and libpciaccess-dev package descriptions.
     Thanks Steve Magoun! (LP: #1274241)
 
- -- Robert Hooker <sarvatt@ubuntu.com>  Wed, 29 Jan 2014 16:35:07 -0500
+ -- Julien Cristau <jcristau@debian.org>  Sat, 12 Jul 2014 15:35:44 +0200
 
 libpciaccess (0.13.2-1) unstable; urgency=low
 
