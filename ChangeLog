@@ -1,3 +1,123 @@
+commit f99c2e4199ce37f6f94428df504427f67c3ec543
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Tue Feb 3 15:59:10 2015 -0800
+
+    libpciaccess 0.13.3
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 9b1bf11c81881c9cc6e6145011cf229978f109f4
+Author: Mark Kettenis <kettenis@openbsd.org>
+Date:   Mon Sep 29 22:34:25 2014 +0200
+
+    Use PCIOCREADMASK on OpenBSD.
+    
+    If the machdep.allowaperture sysctl(8) variable is set to 0, writing to PCI
+    config space is not allowed.  So instead of writing 0xffffffff to the BARs
+    in order to determine their size, use the PCIOCREADMASK ioctl(2) which
+    returns the mask of changeable bits that was saved by the kernel when the
+    devices was initially probed.
+    
+    Reviewed-by: Matthieu Herrb <matthieu@herbb.eu>
+    Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+
+commit b7e42643d2ee6521cf23e6dfe49a8369ba4bf9bb
+Author: Matthew Green <mrg@NetBSD.org>
+Date:   Sat Jul 26 22:09:30 2014 +0200
+
+    Implement the kernel_has_driver() method for NetBSD.
+    
+    This has the benefit of stopping the "vesa" driver from loading on
+    hardware that has been claimed by a kernel driver and thus shouldn't
+    be using "vesa".
+    
+    Reviewed-by: Matthieu Herrb <matthieu@herrb.eu>
+    Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
+
+commit 1654a0462723b3b75d7a4a20bedfc653cc3e1f1a
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Wed Jul 2 16:41:10 2014 -0700
+
+    Solaris: Fix fd leak in pci_device_solx_devfs_map_range()
+    
+    Caching fd's for reuse is most effective when you actually stick the
+    newly opened fd in the cache, instead of letting it leak at the end
+    of the function.
+    
+    Regression introduced by yours truly in commit 9f2d95e61896f41adb.
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Reviewed-by: Randy Fishel <randy.fishel@oracle.com>
+
+commit ee4e253a3f1a62e2f3f89f5339590fd4e6cde7c4
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Fri May 9 19:25:10 2014 -0700
+
+    Enable use of __attribute__((deprecated)) with Solaris Studio 12.4 compiler
+    
+    Support for this attribute is added in the 12.4 beta release.
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit b9c068896914b4132a24839c9ef7f9fcd6282d88
+Author: Marcin Ko?cielnicki <koriakin@0x04.net>
+Date:   Wed Feb 5 09:01:25 2014 +0100
+
+    Fix IO access functions on linux+sysfs.
+    
+    The offsets on the resourceX files are relative to BAR base - don't add
+    the base address ourselves.
+    
+    Reviewed-by: Adam Jackson <ajax@redhat.com>
+
+commit b29e9be9aff5c5a9ec5e2bcfc48044081b82742b
+Author: Samuel Pitoiset <samuel.pitoiset@gmail.com>
+Date:   Wed Jan 29 18:44:40 2014 +0100
+
+    Fix a compilation error on GNU Hurd platforms.
+    
+    This fixes a typo (unAMp instead of unMAp) introduced in the Windows/Cygwin
+    support patch.
+    
+    Reviewed-by: Jon TURNEY <jon.turney@dronecode.org.uk>
+
+commit 6bfccc7ec4f0705595385f6684b6849663f781b4
+Author: Samuel Pitoiset <samuel.pitoiset@gmail.com>
+Date:   Sat Jan 18 17:19:14 2014 +0100
+
+    Windows/Cygwin: Add support through the WinIo library
+    
+    V2:
+    - Add support for unmapping
+    - Add a README.cygwin
+    
+    Reviewed-by: Martin Peres <martin.peres@free.fr>
+    Reviewed-by: Jon TURNEY <jon.turney@dronecode.org.uk>
+
+commit 06f562584a885eff7366dca82caf746e62b5a21f
+Author: Thomas Klausner <wiz@NetBSD.org>
+Date:   Wed Aug 14 19:45:46 2013 +0200
+
+    Improve NetBSD i386 detection.
+    
+    Sometimes, other values are reported for the CPU part, like
+    "i486--netbsdelf").
+    
+    From: Mark Davies <markd@NetBSD.org>
+    Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
+    Reviewed-By:  Matt Dew <marcoz@osource.org>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 4427be3de93f359ab106a649a43e41319625e1e7
+Author: Thomas Klausner <wiz@NetBSD.org>
+Date:   Sun Jul 21 11:44:14 2013 +0200
+
+    Fix zlib handling on NetBSD.
+    
+    Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
+    Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
 commit aa7925c4a798b9ed2cd43bd3c99c2df2a1824311
 Author: Alan Coopersmith <alan.coopersmith@oracle.com>
 Date:   Sat Jul 20 15:53:42 2013 -0700

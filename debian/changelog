@@ -1,8 +1,9 @@
-libpciaccess (0.13.2-4) UNRELEASED; urgency=medium
+libpciaccess (0.13.3-1) UNRELEASED; urgency=medium
 
   * Let uscan verify tarball signatures.
+  * New upstream release.
 
- -- Julien Cristau <jcristau@debian.org>  Sun, 26 Apr 2015 14:58:46 +0200
+ -- Julien Cristau <jcristau@debian.org>  Sun, 26 Apr 2015 14:59:28 +0200
 
 libpciaccess (0.13.2-3) unstable; urgency=medium
 
