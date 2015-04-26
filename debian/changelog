@@ -2,6 +2,8 @@ libpciaccess (0.13.3-1) UNRELEASED; urgency=medium
 
   * Let uscan verify tarball signatures.
   * New upstream release.
+  * Include config.h in all C files (closes: #749008).  Thanks, Michael
+    Tautschnig!
 
  -- Julien Cristau <jcristau@debian.org>  Sun, 26 Apr 2015 14:59:28 +0200
 
