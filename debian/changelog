@@ -1,3 +1,9 @@
+libpciaccess (0.13.2-4) UNRELEASED; urgency=medium
+
+  * Let uscan verify tarball signatures.
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 26 Apr 2015 14:58:46 +0200
+
 libpciaccess (0.13.2-3) unstable; urgency=medium
 
   * Remove David and Cyril from Uploaders.
