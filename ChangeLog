@@ -1,3 +1,91 @@
+commit bbd1acdd1d25b9a68f4b7913a4094af20d7cf78f
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Thu Apr 30 21:44:41 2015 -0700
+
+    libpciaccess 0.13.4
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit d0c53bdc0b35a5416fc30a610b7401978871a5f1
+Author: Tobias Nygren <tnn@NetBSD.org>
+Date:   Mon Feb 16 10:22:35 2015 +0100
+
+    Bug 89151: Fix build on NetBSD/alpha and NetBSD/sparc64.
+    
+    This patch is required for building on NetBSD/alpha (needs platform
+    specific -lalpha) and NetBSD/sparc64 (no platform specific library,
+    just -lpci). The patch also generalizes to support all NetBSD
+    platforms with pci bus.
+    
+    https://bugs.freedesktop.org/show_bug.cgi?id=89151
+    
+    Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Signed-off-by: Thomas Klausner <wiz@NetBSD.org>
+
+commit 1972e9223764618aedc5adc32b64b2c043d1b826
+Author: Eero Tamminen <eero.t.tamminen@intel.com>
+Date:   Tue Feb 10 14:55:22 2015 +0000
+
+    Check for __linux__ instead of linux during compilation
+    
+    "__linux__" is the POSIX define for checking for Linux OS, "linux" is
+    deprecated and apparently not supported by Android.
+    
+    Besides correcting the define, patch adds error for the case OS isn't
+    recognized.
+    
+    Signed-off-by: Eero Tamminen <eero.t.tamminen@intel.com>
+    
+    v2: Drop double negative from commit msg. Spotted by Mateusz Jończyk.
+    [Emil Velikov: Remove irrelevant Android details from commit msg.]
+    Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+    Reviewed-by: Jasper St. Pierre <jstpierre@mecheye.net>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit ed340abc37b07cb9fc788ae77d837088c54cd16a
+Author: Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue Feb 10 14:55:21 2015 +0000
+
+    Include config.h before any other headers.
+    
+    The former has a series of defines which in some cases are crusial to be
+    set before including any system headers.
+    
+    Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+    Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 6329ef9e5d6f36ca3f7258279f6640037b71926a
+Author: Chih-Wei Huang <cwhuang@linux.org.tw>
+Date:   Tue Feb 10 14:55:20 2015 +0000
+
+    Add missing guards around config.h inclusion
+    
+    In some cases the header may not exist, leading to compilation issues.
+    Add the ifdef HAVE_CONFIG_H, as it is those in other parts of the
+    project.
+    
+    [Emil Velikov: Split out from a larger commit, rework commit message]
+    Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+    Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit e42ee2a075a8b7c62b190815be42ea26c9d8c03f
+Author: Emil Velikov <emil.l.velikov@gmail.com>
+Date:   Tue Feb 10 14:55:19 2015 +0000
+
+    Include the POSIX fcntl.h instead of sys/fcntl.h
+    
+    The former is part of the POSIX standard, and (unlike the latter) is
+    more widely available.
+    
+    v2: Drop gracious d in header name. Spotted by Alan.
+    
+    Cc: Adam Jackson <ajax@redhat.com>
+    Signed-off-by: Emil Velikov <emil.l.velikov@gmail.com>
+    Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
 commit f99c2e4199ce37f6f94428df504427f67c3ec543
 Author: Alan Coopersmith <alan.coopersmith@oracle.com>
 Date:   Tue Feb 3 15:59:10 2015 -0800
