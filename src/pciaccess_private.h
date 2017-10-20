@@ -29,6 +29,9 @@
  * \author Ian Romanick <idr@us.ibm.com>
  */
 
+#ifndef PCIACCESS_PRIVATE_H
+#define PCIACCESS_PRIVATE_H
+
 #if defined(__GNUC__) && (__GNUC__ >= 4)
 # define _pci_hidden      __attribute__((visibility("hidden")))
 #elif defined(__SUNPRO_C) && (__SUNPRO_C >= 0x550)
@@ -189,5 +192,8 @@ extern int pci_system_netbsd_create( void );
 extern int pci_system_openbsd_create( void );
 extern void pci_system_openbsd_init_dev_mem( int );
 extern int pci_system_solx_devfs_create( void );
+extern int pci_system_hurd_create( void );
 extern int pci_system_x86_create( void );
 extern void pci_io_cleanup( void );
+
+#endif /* PCIACCESS_PRIVATE_H */

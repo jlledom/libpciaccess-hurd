@@ -20,6 +20,8 @@
  */
 
 #define _GNU_SOURCE
+#include "x86_pci.h"
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,7 +38,7 @@
 
 #include <sys/io.h>
 
-static int
+int
 x86_enable_io(void)
 {
     if (!ioperm(0, 0xffff, 1))
@@ -44,7 +46,7 @@ x86_enable_io(void)
     return errno;
 }
 
-static int
+int
 x86_disable_io(void)
 {
     if (!ioperm(0, 0xffff, 0))
@@ -204,28 +206,6 @@ outl(uint32_t value, uint16_t port)
 #error How to enable IO ports on this system?
 
 #endif
-
-#define PCI_VENDOR(reg)		((reg) & 0xFFFF)
-#define PCI_VENDOR_INVALID	0xFFFF
-
-#define PCI_VENDOR_ID		0x00
-#define PCI_SUB_VENDOR_ID	0x2c
-#define PCI_VENDOR_ID_COMPAQ		0x0e11
-#define PCI_VENDOR_ID_INTEL		0x8086
-
-#define PCI_DEVICE(reg)		(((reg) >> 16) & 0xFFFF)
-#define PCI_DEVICE_INVALID	0xFFFF
-
-#define PCI_CLASS		0x08
-#define PCI_CLASS_DEVICE	0x0a
-#define PCI_CLASS_DISPLAY_VGA		0x0300
-#define PCI_CLASS_BRIDGE_HOST		0x0600
-
-#define	PCIC_DISPLAY	0x03
-#define	PCIS_DISPLAY_VGA	0x00
-
-#define PCI_HDRTYPE	0x0E
-#define PCI_IRQ		0x3C
 
 struct pci_system_x86 {
     struct pci_system system;
@@ -446,7 +426,7 @@ pci_nfuncs(struct pci_system_x86 *pci_sys_x86, int bus, int dev)
 /**
  * Read a VGA rom using the 0xc0000 mapping.
  */
-static int
+int
 pci_device_x86_read_rom(struct pci_device *dev, void *buffer)
 {
     void *bios;
@@ -524,7 +504,7 @@ get_test_val_size( uint32_t testval )
     return size;
 }
 
-static int
+int
 pci_device_x86_probe(struct pci_device *dev)
 {
     uint8_t irq, hdrtype;
@@ -633,7 +613,7 @@ pci_device_x86_unmap_range(struct pci_device *dev,
 
 #else
 
-static int
+int
 pci_device_x86_map_range(struct pci_device *dev,
     struct pci_device_mapping *map)
 {
@@ -654,7 +634,7 @@ pci_device_x86_map_range(struct pci_device *dev,
     return 0;
 }
 
-static int
+int
 pci_device_x86_unmap_range(struct pci_device *dev,
     struct pci_device_mapping *map)
 {
@@ -715,13 +695,13 @@ pci_device_x86_write(struct pci_device *dev, const void *data,
     return 0;
 }
 
-static void
+void
 pci_system_x86_destroy(void)
 {
     x86_disable_io();
 }
 
-static struct pci_io_handle *
+struct pci_io_handle *
 pci_device_x86_open_legacy_io(struct pci_io_handle *ret,
     struct pci_device *dev, pciaddr_t base, pciaddr_t size)
 {
@@ -734,7 +714,7 @@ pci_device_x86_open_legacy_io(struct pci_io_handle *ret,
     return ret;
 }
 
-static void
+void
 pci_device_x86_close_io(struct pci_device *dev, struct pci_io_handle *handle)
 {
     /* Like in the Linux case, do not disable I/O, as it may be opened several
@@ -742,46 +722,46 @@ pci_device_x86_close_io(struct pci_device *dev, struct pci_io_handle *handle)
     /* x86_disable_io(); */
 }
 
-static uint32_t
+uint32_t
 pci_device_x86_read32(struct pci_io_handle *handle, uint32_t reg)
 {
     return inl(reg + handle->base);
 }
 
-static uint16_t
+uint16_t
 pci_device_x86_read16(struct pci_io_handle *handle, uint32_t reg)
 {
     return inw(reg + handle->base);
 }
 
-static uint8_t
+uint8_t
 pci_device_x86_read8(struct pci_io_handle *handle, uint32_t reg)
 {
     return inb(reg + handle->base);
 }
 
-static void
+void
 pci_device_x86_write32(struct pci_io_handle *handle, uint32_t reg,
 		       uint32_t data)
 {
     outl(data, reg + handle->base);
 }
 
-static void
+void
 pci_device_x86_write16(struct pci_io_handle *handle, uint32_t reg,
 		       uint16_t data)
 {
     outw(data, reg + handle->base);
 }
 
-static void
+void
 pci_device_x86_write8(struct pci_io_handle *handle, uint32_t reg,
 		      uint8_t data)
 {
     outb(data, reg + handle->base);
 }
 
-static int
+int
 pci_device_x86_map_legacy(struct pci_device *dev, pciaddr_t base,
     pciaddr_t size, unsigned map_flags, void **addr)
 {
@@ -797,7 +777,7 @@ pci_device_x86_map_legacy(struct pci_device *dev, pciaddr_t base,
     return err;
 }
 
-static int
+int
 pci_device_x86_unmap_legacy(struct pci_device *dev, void *addr,
     pciaddr_t size)
 {
