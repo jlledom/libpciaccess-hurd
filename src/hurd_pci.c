@@ -58,9 +58,9 @@ init_client(void)
 }
 
 /*
- * Read 'size' bytes from B/D/F + reg and store them in 'data'.
+ * Read 'size' bytes from B/D/F + reg and store them in 'buf'.
  *
- * It's assumed that 'size' bytes are allocated in 'data'
+ * It's assumed that 'size' bytes are allocated in 'buf'
  */
 static int
 pciclient_cfg_read(int bus, int dev, int func, int reg, char *buf,
@@ -92,7 +92,7 @@ pciclient_cfg_read(int bus, int dev, int func, int reg, char *buf,
     return 0;
 }
 
-/* Write 'size' bytes from 'data' to B/D/F + reg */
+/* Write 'size' bytes from 'buf' to B/D/F + reg */
 static int
 pciclient_cfg_write(int bus, int dev, int func, int reg, char *buf,
                      size_t * nbytes)

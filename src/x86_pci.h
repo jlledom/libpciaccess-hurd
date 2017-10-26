@@ -19,6 +19,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* Macros and declarations used by both x86 and Hurd modules. */
+
 #ifndef X86_PCI_H
 #define X86_PCI_H
 
