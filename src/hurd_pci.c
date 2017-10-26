@@ -66,7 +66,7 @@ static int
 pciclient_cfg_read(int bus, int dev, int func, int reg, char *buf,
                     size_t * nbytes)
 {
-    error_t err;
+    int err;
     size_t nread;
     char *data;
 
@@ -97,7 +97,7 @@ static int
 pciclient_cfg_write(int bus, int dev, int func, int reg, char *buf,
                      size_t * nbytes)
 {
-    error_t err;
+    int err;
     size_t nwrote;
 
     err = pci_conf_write(pci_server_port, bus, dev, func, reg, buf, *nbytes,
