@@ -37,6 +37,9 @@
 #include "pciaccess.h"
 #include "pciaccess_private.h"
 
+/* Server path */
+#define _SERVERS_PCI_CONF	_SERVERS_BUS "/pci"
+
 struct pci_system_hurd {
     struct pci_system system;
 };
