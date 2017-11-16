@@ -153,6 +153,9 @@ struct pci_device_private {
 #ifdef __sun
     int is_primary;
 #endif
+#ifdef __GNU__
+    unsigned long device_port;
+#endif
 };
 
 
