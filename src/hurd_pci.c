@@ -166,6 +166,14 @@ pci_device_hurd_write(struct pci_device *dev, const void *data,
     return 0;
 }
 
+static void
+pci_device_hurd_destroy(struct pci_device *dev)
+{
+    struct pci_device_private *d = (struct pci_device_private*) dev;
+
+    mach_port_deallocate (mach_task_self (), d->device_port);
+}
+
 static int
 enum_devices(const char *parent, struct pci_device_private **device,
                 int domain, int bus, int dev, int func, tree_level lev)
@@ -291,6 +299,7 @@ enum_devices(const char *parent, struct pci_device_private **device,
 
 static const struct pci_system_methods hurd_pci_methods = {
     .destroy = pci_system_x86_destroy,
+    .destroy_device = pci_device_hurd_destroy,
     .read_rom = pci_device_x86_read_rom,
     .probe = pci_device_x86_probe,
     .map_range = pci_device_x86_map_range,
