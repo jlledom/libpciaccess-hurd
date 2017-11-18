@@ -52,8 +52,6 @@
 int x86_enable_io(void);
 int x86_disable_io(void);
 void pci_system_x86_destroy(void);
-int pci_device_x86_read_rom(struct pci_device *dev, void *buffer);
-int pci_device_x86_probe(struct pci_device *dev);
 int pci_device_x86_map_range(struct pci_device *dev,
     struct pci_device_mapping *map);
 int pci_device_x86_unmap_range(struct pci_device *dev,

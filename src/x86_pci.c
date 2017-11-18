@@ -426,7 +426,7 @@ pci_nfuncs(struct pci_system_x86 *pci_sys_x86, int bus, int dev)
 /**
  * Read a VGA rom using the 0xc0000 mapping.
  */
-int
+static int
 pci_device_x86_read_rom(struct pci_device *dev, void *buffer)
 {
     void *bios;
@@ -504,7 +504,7 @@ get_test_val_size( uint32_t testval )
     return size;
 }
 
-int
+static int
 pci_device_x86_probe(struct pci_device *dev)
 {
     uint8_t irq, hdrtype;

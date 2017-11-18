@@ -58,6 +58,138 @@ struct pci_system_hurd {
     struct pci_system system;
 };
 
+/* Returns the number of regions (base address registers) the device has */
+static int
+pci_device_hurd_get_num_regions(uint8_t header_type)
+{
+    switch (header_type & 0x7f) {
+	case 0:
+	    return 6;
+	case 1:
+	    return 2;
+	case 2:
+	    return 1;
+	default:
+	    fprintf(stderr,"unknown header type %02x\n", header_type);
+	    return 0;
+    }
+}
+
+/* Masks out the flag bigs of the base address register value */
+static uint32_t
+get_map_base( uint32_t val )
+{
+    if (val & 0x01)
+	return val & ~0x03;
+    else
+	return val & ~0x0f;
+}
+
+/* Returns the size of a region based on the all-ones test value */
+static unsigned
+get_test_val_size( uint32_t testval )
+{
+    unsigned size = 1;
+
+    if (testval == 0)
+	return 0;
+
+    /* Mask out the flag bits */
+    testval = get_map_base( testval );
+    if (!testval)
+	return 0;
+
+    while ((testval & 1) == 0) {
+	size <<= 1;
+	testval >>= 1;
+    }
+
+    return size;
+}
+
+static int
+pci_device_hurd_probe(struct pci_device *dev)
+{
+    uint8_t irq, hdrtype;
+    int err, i, bar;
+    char server[NAME_MAX];
+    struct stat romst;
+
+    /* Many of the fields were filled in during initial device enumeration.
+     * At this point, we need to fill in regions, rom_size, and irq.
+     */
+
+    err = pci_device_cfg_read_u8(dev, &irq, PCI_IRQ);
+    if (err)
+        return err;
+    dev->irq = irq;
+
+    err = pci_device_cfg_read_u8(dev, &hdrtype, PCI_HDRTYPE);
+    if (err)
+        return err;
+
+    bar = 0x10;
+    for (i = 0; i < pci_device_hurd_get_num_regions(hdrtype); i++, bar += 4) {
+        uint32_t addr, testval;
+
+        /* Get the base address */
+        err = pci_device_cfg_read_u32(dev, &addr, bar);
+        if (err != 0)
+            continue;
+
+        /* Test write all ones to the register, then restore it. */
+        err = pci_device_cfg_write_u32(dev, 0xffffffff, bar);
+        if (err != 0)
+            continue;
+        pci_device_cfg_read_u32(dev, &testval, bar);
+        err = pci_device_cfg_write_u32(dev, addr, bar);
+
+        if (addr & 0x01)
+            dev->regions[i].is_IO = 1;
+        if (addr & 0x04)
+            dev->regions[i].is_64 = 1;
+        if (addr & 0x08)
+            dev->regions[i].is_prefetchable = 1;
+
+        /* Set the size */
+        dev->regions[i].size = get_test_val_size(testval);
+
+        /* Set the base address value */
+        if (dev->regions[i].is_64) {
+            uint32_t top;
+
+            err = pci_device_cfg_read_u32(dev, &top, bar + 4);
+            if (err != 0)
+                continue;
+
+            dev->regions[i].base_addr = ((uint64_t)top << 32)
+                                         | get_map_base(addr);
+            bar += 4;
+            i++;
+        }
+        else {
+            dev->regions[i].base_addr = get_map_base(addr);
+        }
+    }
+
+    /* If it's a VGA device, read the rom size from the fs tree
+     */
+    if ((dev->device_class & 0x00ffff00) ==
+        ((PCIC_DISPLAY << 16) | (PCIS_DISPLAY_VGA << 8)))
+    {
+        snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u",
+                 _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
+                 dev->func);
+        err = lstat(server, &romst);
+        if (err)
+            return err;
+
+        dev->rom_size = romst.st_size;
+    }
+
+    return 0;
+}
+
 /*
  * Read 'size' bytes from B/D/F + reg and store them in 'buf'.
  *
@@ -163,6 +295,38 @@ pci_device_hurd_write(struct pci_device *dev, const void *data,
         size -= towrite;
         *bytes_written += towrite;
     }
+    return 0;
+}
+
+static int
+pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
+{
+    void *rom;
+    int romfd;
+    char server[NAME_MAX];
+
+    if ((dev->device_class & 0x00ffff00) !=
+          ((PCIC_DISPLAY << 16) | ( PCIS_DISPLAY_VGA << 8))) {
+        return ENOSYS;
+    }
+
+    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u", _SERVERS_PCI_CONF,
+             dev->domain, dev->bus, dev->dev, dev->func);
+    romfd = open(server, O_RDONLY | O_CLOEXEC);
+    if (romfd == -1)
+        return errno;
+
+    rom = mmap(NULL, dev->rom_size, PROT_READ, 0, romfd, 0);
+    if (rom == MAP_FAILED) {
+        close(romfd);
+        return errno;
+    }
+
+    memcpy(buffer, rom, dev->rom_size);
+
+    munmap(rom, dev->rom_size);
+    close(romfd);
+
     return 0;
 }
 
@@ -300,8 +464,8 @@ enum_devices(const char *parent, struct pci_device_private **device,
 static const struct pci_system_methods hurd_pci_methods = {
     .destroy = pci_system_x86_destroy,
     .destroy_device = pci_device_hurd_destroy,
-    .read_rom = pci_device_x86_read_rom,
-    .probe = pci_device_x86_probe,
+    .read_rom = pci_device_hurd_read_rom,
+    .probe = pci_device_hurd_probe,
     .map_range = pci_device_x86_map_range,
     .unmap_range = pci_device_x86_unmap_range,
     .read = pci_device_hurd_read,
