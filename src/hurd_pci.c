@@ -43,8 +43,9 @@
 /* Server path */
 #define _SERVERS_PCI_CONF	_SERVERS_BUS "/pci"
 
-/* Config file name */
+/* File names */
 #define FILE_CONFIG_NAME "config"
+#define FILE_ROM_NAME "rom"
 
 typedef enum {
     LEVEL_NONE,
@@ -177,9 +178,9 @@ pci_device_hurd_probe(struct pci_device *dev)
     if ((dev->device_class & 0x00ffff00) ==
         ((PCIC_DISPLAY << 16) | (PCIS_DISPLAY_VGA << 8)))
     {
-        snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u",
+        snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
                  _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
-                 dev->func);
+                 dev->func, FILE_ROM_NAME);
         err = lstat(server, &romst);
         if (err)
             return err;
@@ -310,8 +311,8 @@ pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
         return ENOSYS;
     }
 
-    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u", _SERVERS_PCI_CONF,
-             dev->domain, dev->bus, dev->dev, dev->func);
+    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s", _SERVERS_PCI_CONF,
+             dev->domain, dev->bus, dev->dev, dev->func, FILE_ROM_NAME);
     romfd = open(server, O_RDONLY | O_CLOEXEC);
     if (romfd == -1)
         return errno;
