@@ -361,12 +361,13 @@ static int
 enum_devices(const char *parent, struct pci_device_private **device,
                 int domain, int bus, int dev, int func, tree_level lev)
 {
-    int err, ret, confd;
+    int err, ret;
     DIR *dir;
     struct dirent *entry;
     char path[NAME_MAX];
     char server[NAME_MAX];
     uint32_t reg;
+    size_t toread;
     mach_port_t device_port;
 
     dir = opendir(parent);
@@ -416,19 +417,18 @@ enum_devices(const char *parent, struct pci_device_private **device,
                 continue;
 
             /* We found an available virtual device, add it to our list */
-            confd = open(path, O_RDONLY, 0);
-            if (confd < 0)
+            snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
+                     _SERVERS_PCI_CONF, domain, bus, dev, func, entry->d_name);
+            device_port = file_name_lookup(server, 0, 0);
+            if (device_port == MACH_PORT_NULL)
                 return errno;
 
-            ret = lseek(confd, PCI_VENDOR_ID, SEEK_SET);
-            if (ret < 0)
-                return errno;
-            if (ret != PCI_VENDOR_ID)
-                return -1;
-            ret = read(confd, (char*)&reg, sizeof(reg));
-            if (ret < 0)
-                return errno;
-            if (ret != sizeof(reg))
+            toread = sizeof(reg);
+            err = pciclient_cfg_read(device_port, bus, dev, func,
+                                     PCI_VENDOR_ID, (char*)&reg, &toread);
+            if (err)
+                return err;
+            if (toread != sizeof(reg))
                 return -1;
 
             (*device)->base.domain = domain;
@@ -438,43 +438,30 @@ enum_devices(const char *parent, struct pci_device_private **device,
             (*device)->base.vendor_id = PCI_VENDOR(reg);
             (*device)->base.device_id = PCI_DEVICE(reg);
 
-            ret = lseek(confd, PCI_CLASS, SEEK_SET);
-            if (ret < 0)
-                return errno;
-            if (ret != PCI_CLASS)
-                return -1;
-            ret = read(confd, (char*)&reg, sizeof(reg));
-            if (ret < 0)
-                return errno;
-            if (ret != sizeof(reg))
+            toread = sizeof(reg);
+            err = pciclient_cfg_read(device_port, bus, dev, func, PCI_CLASS,
+                                     (char*)&reg, &toread);
+            if (err)
+                return err;
+            if (toread != sizeof(reg))
                 return -1;
 
             (*device)->base.device_class = reg >> 8;
             (*device)->base.revision = reg & 0xFF;
 
-            ret = lseek(confd, PCI_SUB_VENDOR_ID, SEEK_SET);
-            if (ret < 0)
-                return errno;
-            if (ret != PCI_SUB_VENDOR_ID)
+            toread = sizeof(reg);
+            err = pciclient_cfg_read(device_port, bus, dev, func,
+                                     PCI_SUB_VENDOR_ID, (char*)&reg, &toread);
+            if (err)
+                return err;
+            if (toread != sizeof(reg))
                 return -1;
-            ret = read(confd, (char*)&reg, sizeof(reg));
-            if (ret < 0)
-                return errno;
-            if (ret != sizeof(reg))
-                return -1;
-
-            close(confd);
 
             (*device)->base.subvendor_id = PCI_VENDOR(reg);
             (*device)->base.subdevice_id = PCI_DEVICE(reg);
 
-            snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u",
-                     _SERVERS_PCI_CONF, domain, bus, dev, func);
-            device_port = file_name_lookup(server, 0, 0);
-            if (device_port == MACH_PORT_NULL)
-                return errno;
-
             (*device)->device_port = device_port;
+
             (*device)++;
         }
     }
