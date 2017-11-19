@@ -431,9 +431,6 @@ enum_devices(const char *parent, struct pci_device_private **device,
             if (ret != sizeof(reg))
                 return -1;
 
-             if (PCI_VENDOR(reg) == PCI_VENDOR_INVALID
-                 || PCI_VENDOR(reg) == 0)
-                continue;
             (*device)->base.domain = domain;
             (*device)->base.bus = bus;
             (*device)->base.dev = dev;
