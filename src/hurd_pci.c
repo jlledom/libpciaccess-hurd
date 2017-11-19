@@ -47,6 +47,7 @@
 #define FILE_CONFIG_NAME "config"
 #define FILE_ROM_NAME "rom"
 
+/* Level in the fs tree */
 typedef enum {
     LEVEL_NONE,
     LEVEL_DOMAIN,
@@ -243,6 +244,10 @@ pciclient_cfg_write(mach_port_t device_port, int bus, int dev, int func,
     return err;
 }
 
+/*
+ * Read up to `size' bytes from `dev' configuration space to `data' starting
+ * at `offset'. Write the amount on read bytes in `bytes_read'.
+ */
 static int
 pci_device_hurd_read(struct pci_device *dev, void *data,
     pciaddr_t offset, pciaddr_t size, pciaddr_t *bytes_read)
@@ -270,6 +275,10 @@ pci_device_hurd_read(struct pci_device *dev, void *data,
     return 0;
 }
 
+/*
+ * Write up to `size' bytes from `data' to `dev' configuration space starting
+ * at `offset'. Write the amount on written bytes in `bytes_written'.
+ */
 static int
 pci_device_hurd_write(struct pci_device *dev, const void *data,
     pciaddr_t offset, pciaddr_t size, pciaddr_t *bytes_written)
@@ -299,6 +308,9 @@ pci_device_hurd_write(struct pci_device *dev, const void *data,
     return 0;
 }
 
+/*
+ * Copy the device's firmware in `buffer'
+ */
 static int
 pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
 {
@@ -331,6 +343,11 @@ pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
     return 0;
 }
 
+/*
+ * Each device has its own server where send RPC's to.
+ *
+ * Deallocate the port before destroying the device.
+ */
 static void
 pci_device_hurd_destroy(struct pci_device *dev)
 {
@@ -339,6 +356,7 @@ pci_device_hurd_destroy(struct pci_device *dev)
     mach_port_deallocate (mach_task_self (), d->device_port);
 }
 
+/* Walk through the FS tree to see what is allowed for us */
 static int
 enum_devices(const char *parent, struct pci_device_private **device,
                 int domain, int bus, int dev, int func, tree_level lev)
@@ -367,6 +385,10 @@ enum_devices(const char *parent, struct pci_device_private **device,
             if (errno)
                 return errno;
 
+            /*
+             * We found a valid directory.
+             * Update the address and switch to the next level.
+             */
             switch (lev) {
             case LEVEL_DOMAIN:
                 domain = ret;
@@ -393,6 +415,7 @@ enum_devices(const char *parent, struct pci_device_private **device,
                 /* We are looking for the config file */
                 continue;
 
+            /* We found an available virtual device, add it to our list */
             confd = open(path, O_RDONLY, 0);
             if (confd < 0)
                 return errno;
@@ -510,6 +533,7 @@ pci_system_hurd_create(void)
     if (pci_server_port == MACH_PORT_NULL)
         return errno;
 
+    /* The server gives us the number of available devices for us */
     err = pci_conf_get_ndevs (pci_server_port, &ndevs);
     if (err) {
         mach_port_deallocate (mach_task_self (), pci_server_port);
