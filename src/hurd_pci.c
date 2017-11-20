@@ -174,20 +174,12 @@ pci_device_hurd_probe(struct pci_device *dev)
         }
     }
 
-    /* If it's a VGA device, read the rom size from the fs tree
-     */
-    if ((dev->device_class & 0x00ffff00) ==
-        ((PCIC_DISPLAY << 16) | (PCIS_DISPLAY_VGA << 8)))
-    {
-        snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
-                 _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
-                 dev->func, FILE_ROM_NAME);
-        err = lstat(server, &romst);
-        if (err)
-            return err;
-
+    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
+             _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
+             dev->func, FILE_ROM_NAME);
+    err = lstat(server, &romst);
+    if (!err)
         dev->rom_size = romst.st_size;
-    }
 
     return 0;
 }
@@ -317,11 +309,6 @@ pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
     void *rom;
     int romfd;
     char server[NAME_MAX];
-
-    if ((dev->device_class & 0x00ffff00) !=
-          ((PCIC_DISPLAY << 16) | ( PCIS_DISPLAY_VGA << 8))) {
-        return ENOSYS;
-    }
 
     snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s", _SERVERS_PCI_CONF,
              dev->domain, dev->bus, dev->dev, dev->func, FILE_ROM_NAME);
