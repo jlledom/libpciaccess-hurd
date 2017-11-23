@@ -33,7 +33,7 @@
 #include <string.h>
 #include <strings.h>
 #include <hurd.h>
-#include <hurd/pci_conf.h>
+#include <hurd/pci.h>
 #include <hurd/paths.h>
 
 #include "x86_pci.h"
@@ -56,66 +56,31 @@ typedef enum {
     LEVEL_FUNC
 } tree_level;
 
+/* Memory region info, as the server send it to us */
+struct dev_region
+{
+    pciaddr_t base_addr;
+    pciaddr_t size;
+    unsigned is_IO:1;
+    unsigned is_prefetchable:1;
+    unsigned is_64:1;
+};
+
 struct pci_system_hurd {
     struct pci_system system;
 };
 
-/* Returns the number of regions (base address registers) the device has */
-static int
-pci_device_hurd_get_num_regions(uint8_t header_type)
-{
-    switch (header_type & 0x7f) {
-	case 0:
-	    return 6;
-	case 1:
-	    return 2;
-	case 2:
-	    return 1;
-	default:
-	    fprintf(stderr,"unknown header type %02x\n", header_type);
-	    return 0;
-    }
-}
-
-/* Masks out the flag bigs of the base address register value */
-static uint32_t
-get_map_base( uint32_t val )
-{
-    if (val & 0x01)
-	return val & ~0x03;
-    else
-	return val & ~0x0f;
-}
-
-/* Returns the size of a region based on the all-ones test value */
-static unsigned
-get_test_val_size( uint32_t testval )
-{
-    unsigned size = 1;
-
-    if (testval == 0)
-	return 0;
-
-    /* Mask out the flag bits */
-    testval = get_map_base( testval );
-    if (!testval)
-	return 0;
-
-    while ((testval & 1) == 0) {
-	size <<= 1;
-	testval >>= 1;
-    }
-
-    return size;
-}
-
 static int
 pci_device_hurd_probe(struct pci_device *dev)
 {
-    uint8_t irq, hdrtype;
-    int err, i, bar;
+    uint8_t irq;
+    int err, i;
     char server[NAME_MAX];
     struct stat romst;
+    struct dev_region regions[6];
+    struct pci_device_private *d;
+    size_t regions_size;
+    char *buf;
 
     /* Many of the fields were filled in during initial device enumeration.
      * At this point, we need to fill in regions, rom_size, and irq.
@@ -126,54 +91,40 @@ pci_device_hurd_probe(struct pci_device *dev)
         return err;
     dev->irq = irq;
 
-    err = pci_device_cfg_read_u8(dev, &hdrtype, PCI_HDRTYPE);
-    if (err)
-        return err;
+    /* Get regions */
+    buf = (char *)&regions;
+    regions_size = sizeof(regions);
+    d = (struct pci_device_private *)dev;
+    err = pci_get_dev_regions(d->device_port, dev->bus, dev->dev, dev->func,
+                              &buf, &regions_size);
+    if(err)
+      return err;
 
-    bar = 0x10;
-    for (i = 0; i < pci_device_hurd_get_num_regions(hdrtype); i++, bar += 4) {
-        uint32_t addr, testval;
-
-        /* Get the base address */
-        err = pci_device_cfg_read_u32(dev, &addr, bar);
-        if (err != 0)
-            continue;
-
-        /* Test write all ones to the register, then restore it. */
-        err = pci_device_cfg_write_u32(dev, 0xffffffff, bar);
-        if (err != 0)
-            continue;
-        pci_device_cfg_read_u32(dev, &testval, bar);
-        err = pci_device_cfg_write_u32(dev, addr, bar);
-
-        if (addr & 0x01)
-            dev->regions[i].is_IO = 1;
-        if (addr & 0x04)
-            dev->regions[i].is_64 = 1;
-        if (addr & 0x08)
-            dev->regions[i].is_prefetchable = 1;
-
-        /* Set the size */
-        dev->regions[i].size = get_test_val_size(testval);
-
-        /* Set the base address value */
-        if (dev->regions[i].is_64) {
-            uint32_t top;
-
-            err = pci_device_cfg_read_u32(dev, &top, bar + 4);
-            if (err != 0)
-                continue;
-
-            dev->regions[i].base_addr = ((uint64_t)top << 32)
-                                         | get_map_base(addr);
-            bar += 4;
-            i++;
+    if((char*)&regions != buf)
+    {
+        if(regions_size > sizeof(regions)) /* Sanity check for bogus server.  */
+        {
+          vm_deallocate(mach_task_self(), (vm_address_t) buf, regions_size);
+          return EGRATUITOUS;
         }
-        else {
-            dev->regions[i].base_addr = get_map_base(addr);
-        }
+
+        memcpy(&regions, buf, regions_size);
+        vm_deallocate(mach_task_self(), (vm_address_t) buf, regions_size);
     }
 
+    for(i=0; i<6; i++)
+    {
+        if(regions[i].size == 0)
+          continue;
+
+        dev->regions[i].base_addr = regions[i].base_addr;
+        dev->regions[i].size = regions[i].size;
+        dev->regions[i].is_IO = regions[i].is_IO;
+        dev->regions[i].is_prefetchable = regions[i].base_addr;
+        dev->regions[i].is_64 = regions[i].is_64;
+    }
+
+    /* Get th rom size */
     snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
              _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
              dev->func, FILE_ROM_NAME);
@@ -505,7 +456,7 @@ pci_system_hurd_create(void)
         return errno;
 
     /* The server gives us the number of available devices for us */
-    err = pci_conf_get_ndevs (pci_server_port, &ndevs);
+    err = pci_get_ndevs (pci_server_port, &ndevs);
     if (err) {
         mach_port_deallocate (mach_task_self (), pci_server_port);
         return err;
