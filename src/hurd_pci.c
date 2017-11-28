@@ -95,14 +95,14 @@ pci_device_hurd_probe(struct pci_device *dev)
     buf = (char *)&regions;
     regions_size = sizeof(regions);
     d = (struct pci_device_private *)dev;
-    err = pci_get_dev_regions(d->device_port, dev->bus, dev->dev, dev->func,
-                              &buf, &regions_size);
+    err = pci_get_dev_regions(d->device_port, &buf, &regions_size);
     if(err)
       return err;
 
     if((char*)&regions != buf)
     {
-        if(regions_size > sizeof(regions)) /* Sanity check for bogus server.  */
+        /* Sanity check for bogus server.  */
+        if(regions_size > sizeof(regions))
         {
           vm_deallocate(mach_task_self(), (vm_address_t) buf, regions_size);
           return EGRATUITOUS;
@@ -136,13 +136,14 @@ pci_device_hurd_probe(struct pci_device *dev)
 }
 
 /*
- * Read 'size' bytes from B/D/F + reg and store them in 'buf'.
+ * Read `nbytes' bytes from `reg' in device's configuretion space
+ * and store them in `buf'.
  *
- * It's assumed that 'size' bytes are allocated in 'buf'
+ * It's assumed that `nbytes' bytes are allocated in `buf'
  */
 static int
-pciclient_cfg_read(mach_port_t device_port, int bus, int dev, int func,
-                   int reg, char *buf, size_t * nbytes)
+pciclient_cfg_read(mach_port_t device_port, int reg, char *buf,
+                   size_t * nbytes)
 {
     int err;
     size_t nread;
@@ -150,8 +151,7 @@ pciclient_cfg_read(mach_port_t device_port, int bus, int dev, int func,
 
     data = buf;
     nread = *nbytes;
-    err = pci_conf_read(device_port, bus, dev, func, reg, &data, &nread,
-                        *nbytes);
+    err = pci_conf_read(device_port, reg, &data, &nread, *nbytes);
     if (err)
         return err;
 
@@ -170,16 +170,15 @@ pciclient_cfg_read(mach_port_t device_port, int bus, int dev, int func,
     return 0;
 }
 
-/* Write 'size' bytes from 'buf' to B/D/F + reg */
+/* Write `nbytes' bytes from `buf' to `reg' in device's configuration space */
 static int
-pciclient_cfg_write(mach_port_t device_port, int bus, int dev, int func,
-                    int reg, char *buf, size_t * nbytes)
+pciclient_cfg_write(mach_port_t device_port, int reg, char *buf,
+                    size_t * nbytes)
 {
     int err;
     size_t nwrote;
 
-    err = pci_conf_write(device_port, bus, dev, func, reg, buf, *nbytes,
-                         &nwrote);
+    err = pci_conf_write(device_port, reg, buf, *nbytes, &nwrote);
 
     if (!err)
         *nbytes = nwrote;
@@ -205,8 +204,8 @@ pci_device_hurd_read(struct pci_device *dev, void *data,
         if (toread > size)
             toread = size;
 
-        err = pciclient_cfg_read(d->device_port, dev->bus, dev->dev,
-                                 dev->func, offset, (char*)data, &toread);
+        err = pciclient_cfg_read(d->device_port, offset, (char*)data,
+                                 &toread);
         if (err)
             return err;
 
@@ -238,8 +237,8 @@ pci_device_hurd_write(struct pci_device *dev, const void *data,
         if (towrite > 4 - (offset & 0x3))
             towrite = 4 - (offset & 0x3);
 
-        err = pciclient_cfg_write(d->device_port, dev->bus, dev->dev,
-                                  dev->func, offset, (char*)data, &towrite);
+        err = pciclient_cfg_write(d->device_port, offset, (char*)data,
+                                  &towrite);
         if (err)
             return err;
 
@@ -356,14 +355,15 @@ enum_devices(const char *parent, struct pci_device_private **device,
 
             /* We found an available virtual device, add it to our list */
             snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
-                     _SERVERS_PCI_CONF, domain, bus, dev, func, entry->d_name);
+                     _SERVERS_PCI_CONF, domain, bus, dev, func,
+                     entry->d_name);
             device_port = file_name_lookup(server, 0, 0);
             if (device_port == MACH_PORT_NULL)
                 return errno;
 
             toread = sizeof(reg);
-            err = pciclient_cfg_read(device_port, bus, dev, func,
-                                     PCI_VENDOR_ID, (char*)&reg, &toread);
+            err = pciclient_cfg_read(device_port, PCI_VENDOR_ID, (char*)&reg,
+                                     &toread);
             if (err)
                 return err;
             if (toread != sizeof(reg))
@@ -377,8 +377,8 @@ enum_devices(const char *parent, struct pci_device_private **device,
             (*device)->base.device_id = PCI_DEVICE(reg);
 
             toread = sizeof(reg);
-            err = pciclient_cfg_read(device_port, bus, dev, func, PCI_CLASS,
-                                     (char*)&reg, &toread);
+            err = pciclient_cfg_read(device_port, PCI_CLASS, (char*)&reg,
+                                     &toread);
             if (err)
                 return err;
             if (toread != sizeof(reg))
@@ -388,8 +388,8 @@ enum_devices(const char *parent, struct pci_device_private **device,
             (*device)->base.revision = reg & 0xFF;
 
             toread = sizeof(reg);
-            err = pciclient_cfg_read(device_port, bus, dev, func,
-                                     PCI_SUB_VENDOR_ID, (char*)&reg, &toread);
+            err = pciclient_cfg_read(device_port, PCI_SUB_VENDOR_ID,
+                                     (char*)&reg, &toread);
             if (err)
                 return err;
             if (toread != sizeof(reg))
