@@ -65,11 +65,10 @@ pci_device_hurd_probe(struct pci_device *dev)
 {
     uint8_t irq;
     int err, i;
-    char server[NAME_MAX];
-    struct stat romst;
     struct pci_bar regions[6];
+    struct pci_xrom_bar rom;
     struct pci_device_private *d;
-    size_t regions_size;
+    size_t size;
     char *buf;
 
     /* Many of the fields were filled in during initial device enumeration.
@@ -83,23 +82,23 @@ pci_device_hurd_probe(struct pci_device *dev)
 
     /* Get regions */
     buf = (char *)&regions;
-    regions_size = sizeof(regions);
+    size = sizeof(regions);
     d = (struct pci_device_private *)dev;
-    err = pci_get_dev_regions(d->device_port, &buf, &regions_size);
+    err = pci_get_dev_regions(d->device_port, &buf, &size);
     if(err)
-      return err;
+        return err;
 
     if((char*)&regions != buf)
     {
         /* Sanity check for bogus server.  */
-        if(regions_size > sizeof(regions))
+        if(size > sizeof(regions))
         {
-          vm_deallocate(mach_task_self(), (vm_address_t) buf, regions_size);
-          return EGRATUITOUS;
+            vm_deallocate(mach_task_self(), (vm_address_t) buf, size);
+            return EGRATUITOUS;
         }
 
-        memcpy(&regions, buf, regions_size);
-        vm_deallocate(mach_task_self(), (vm_address_t) buf, regions_size);
+        memcpy(&regions, buf, size);
+        vm_deallocate(mach_task_self(), (vm_address_t) buf, size);
     }
 
     for(i=0; i<6; i++)
@@ -114,13 +113,28 @@ pci_device_hurd_probe(struct pci_device *dev)
         dev->regions[i].is_64 = regions[i].is_64;
     }
 
-    /* Get th rom size */
-    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
-             _SERVERS_PCI_CONF, dev->domain, dev->bus, dev->dev,
-             dev->func, FILE_ROM_NAME);
-    err = lstat(server, &romst);
-    if (!err)
-        dev->rom_size = romst.st_size;
+    /* Get rom info */
+    buf = (char *)&rom;
+    size = sizeof(rom);
+    err = pci_get_dev_rom(d->device_port, &buf, &size);
+    if(err)
+        return err;
+
+    if((char*)&rom != buf)
+    {
+        /* Sanity check for bogus server.  */
+        if(size > sizeof(rom))
+        {
+            vm_deallocate(mach_task_self(), (vm_address_t) buf, size);
+            return EGRATUITOUS;
+        }
+
+        memcpy(&rom, buf, size);
+        vm_deallocate(mach_task_self(), (vm_address_t) buf, size);
+    }
+
+    d->rom_base = rom.base_addr;
+    dev->rom_size = rom.size;
 
     return 0;
 }
