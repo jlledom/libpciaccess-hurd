@@ -56,16 +56,6 @@ typedef enum {
     LEVEL_FUNC
 } tree_level;
 
-/* Memory region info, as the server send it to us */
-struct dev_region
-{
-    pciaddr_t base_addr;
-    pciaddr_t size;
-    unsigned is_IO:1;
-    unsigned is_prefetchable:1;
-    unsigned is_64:1;
-};
-
 struct pci_system_hurd {
     struct pci_system system;
 };
@@ -77,7 +67,7 @@ pci_device_hurd_probe(struct pci_device *dev)
     int err, i;
     char server[NAME_MAX];
     struct stat romst;
-    struct dev_region regions[6];
+    struct pci_bar regions[6];
     struct pci_device_private *d;
     size_t regions_size;
     char *buf;
