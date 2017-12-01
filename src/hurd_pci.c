@@ -40,6 +40,12 @@
 #include "pciaccess.h"
 #include "pciaccess_private.h"
 
+/*
+ * Hurd PCI access using RPCs.
+ *
+ * Some functions are shared with the x86 module to avoid repeating code.
+ */
+
 /* Server path */
 #define _SERVERS_PCI_CONF	_SERVERS_BUS "/pci"
 
