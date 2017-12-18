@@ -47,7 +47,7 @@
  */
 
 /* Server path */
-#define _SERVERS_PCI_CONF	_SERVERS_BUS "/pci"
+#define _SERVERS_BUS_PCI	_SERVERS_BUS "/pci"
 
 /* File names */
 #define FILE_CONFIG_NAME "config"
@@ -270,7 +270,7 @@ pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
     int romfd;
     char server[NAME_MAX];
 
-    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s", _SERVERS_PCI_CONF,
+    snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s", _SERVERS_BUS_PCI,
              dev->domain, dev->bus, dev->dev, dev->func, FILE_ROM_NAME);
     romfd = open(server, O_RDONLY | O_CLOEXEC);
     if (romfd == -1)
@@ -365,7 +365,7 @@ enum_devices(const char *parent, struct pci_device_private **device,
 
             /* We found an available virtual device, add it to our list */
             snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s",
-                     _SERVERS_PCI_CONF, domain, bus, dev, func,
+                     _SERVERS_BUS_PCI, domain, bus, dev, func,
                      entry->d_name);
             device_port = file_name_lookup(server, 0, 0);
             if (device_port == MACH_PORT_NULL)
@@ -461,7 +461,7 @@ pci_system_hurd_create(void)
 
     pci_sys->methods = &hurd_pci_methods;
 
-    pci_server_port = file_name_lookup(_SERVERS_PCI_CONF, 0, 0);
+    pci_server_port = file_name_lookup(_SERVERS_BUS_PCI, 0, 0);
     if (pci_server_port == MACH_PORT_NULL)
         return errno;
 
@@ -483,7 +483,7 @@ pci_system_hurd_create(void)
     }
 
     device = pci_sys->devices;
-    err = enum_devices(_SERVERS_PCI_CONF, &device, -1, -1, -1, -1,
+    err = enum_devices(_SERVERS_BUS_PCI, &device, -1, -1, -1, -1,
                        LEVEL_DOMAIN);
     if (err)
         return err;
