@@ -266,25 +266,23 @@ pci_device_hurd_write(struct pci_device *dev, const void *data,
 static int
 pci_device_hurd_read_rom(struct pci_device * dev, void * buffer)
 {
-    void *rom;
+    ssize_t rd;
     int romfd;
     char server[NAME_MAX];
 
     snprintf(server, NAME_MAX, "%s/%04x/%02x/%02x/%01u/%s", _SERVERS_BUS_PCI,
              dev->domain, dev->bus, dev->dev, dev->func, FILE_ROM_NAME);
+
     romfd = open(server, O_RDONLY | O_CLOEXEC);
     if (romfd == -1)
         return errno;
 
-    rom = mmap(NULL, dev->rom_size, PROT_READ, 0, romfd, 0);
-    if (rom == MAP_FAILED) {
+    rd = read(romfd, buffer, dev->rom_size);
+    if (rd != dev->rom_size) {
         close(romfd);
         return errno;
     }
 
-    memcpy(buffer, rom, dev->rom_size);
-
-    munmap(rom, dev->rom_size);
     close(romfd);
 
     return 0;
