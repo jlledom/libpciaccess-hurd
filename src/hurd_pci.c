@@ -110,12 +110,12 @@ pci_device_hurd_probe(struct pci_device *dev)
     for(i=0; i<6; i++)
     {
         if(regions[i].size == 0)
-          continue;
+            continue;
 
         dev->regions[i].base_addr = regions[i].base_addr;
         dev->regions[i].size = regions[i].size;
         dev->regions[i].is_IO = regions[i].is_IO;
-        dev->regions[i].is_prefetchable = regions[i].base_addr;
+        dev->regions[i].is_prefetchable = regions[i].is_prefetchable;
         dev->regions[i].is_64 = regions[i].is_64;
     }
 
